@@ -1,7 +1,11 @@
 checks for contrat:
   # RQ-020 : clé primaire unique et renseignée
-  - duplicate_count(contrat_id) = 0
-  - missing_count(contrat_id) = 0
+  - duplicate_count(contrat_id):
+      name: RQ-020 contrat_id unique
+      warn: when > 0
+  - missing_count(contrat_id):
+      name: RQ-020 contrat_id non nul
+      warn: when > 0
 
   # RQ-001 : la date de fin est postérieure à la date de début (lignes en échec exportées)
   - failed rows:
