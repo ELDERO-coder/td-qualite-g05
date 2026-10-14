@@ -8,9 +8,9 @@ Les rôles tournent à chaque séance : celui qui décide en S1 n'est pas celui 
 
 | Membre | Identifiant git | S1 | S2 | S3 | S4 | S5 |
 |---|---|---|---|---|---|---|
-| … | … | … | … | … | … | … |
-| … | … | … | … | … | … | … |
-| … | … | … | … | … | … | … |
+| Dewanou | … | Data Steward | … | … | … | … |
+| Oussama | … | DataOwner / Rédacteur | … | … | … | … |
+| Paul | … | Ingénieur qualité | … | … | … | … |
 
 Rôles possibles : `Data Owner` (décide des seuils et du GO), `Data Steward` (définit les règles et leur sévérité), `Ingénieur qualité` (mesure et implémente), `Rédacteur du livrable`.
 
