@@ -1,0 +1,12 @@
+[15:55:24] Soda Core 3.3.5
+[15:55:25] Using DefaultSampler
+[15:55:25] Scan summary:
+[15:55:25] 1/2 checks PASSED: 
+[15:55:25]     us08_client_copy in crm
+[15:55:25]       US-08 missing RQ-020 test [PASSED]
+[15:55:25] 1/2 checks WARNED: 
+[15:55:25]     us08_client_copy in crm
+[15:55:25]       US-08 duplicate RQ-020 test [WARNED]
+[15:55:25]         check_value: 1
+[15:55:25] Only 1 warning. 0 failure. 0 errors. 1 pass.
+

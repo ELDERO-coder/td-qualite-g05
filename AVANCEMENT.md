@@ -6,12 +6,13 @@ Mettez à jour ce tableau à chaque fin de séance (et dès qu'une story change 
 
 | Séance | Story | Intitulé | Statut | Preuve (chemin ou commande) | Remarque |
 |---|---|---|---|---|---|
-| S1 | US-01 | Inventorier les sources | À faire | … | |
-| S1 | US-02 | Alimenter bronze | À faire | … | |
-| S1 | US-03 | Porte B : réconcilier source et bronze | À faire | … | |
-| S1 | US-04 | Dictionnaire du CIF | À faire | … | |
-| S1 | US-06 | Profil de crm.client | À faire | … | |
-| S1 | US-07 | Motifs code postal, téléphone, pays | À faire | … | |
+| S1 | US-01 | Inventorier les sources | Fait | `livrables/S1_bronze_profilage.md` §1 | Comptages MariaDB réalisés ; clés primaires recoupées avec le DDL |
+| S1 | US-02 | Alimenter bronze | Fait | `pipelines/load_bronze.py` ; `docker exec dq_jupyter python pipelines/load_bronze.py --batch-id L-2026-10-14` | Lot TERMINE, 385 262 lignes ; les contrôles RQ-021/RQ-022 restent US-03 |
+| S1 | US-03 | Porte B : réconcilier source et bronze | En cours | `pipelines/check_bronze.py --batch-id L-2026-10-14` | RQ-021/RQ-022 conformes sur 7 tables ; test négatif à confirmer |
+| S1 | US-04 | Dictionnaire du CIF | Fait | `livrables/S1_bronze_profilage.md` §4 ; `reports/us04_cif_profiling.html` ; `reports/us04_cif_metrics.csv` | Profil YData exécuté sur 40 000 lignes ; 10 colonnes documentées avec longueurs, distincts, valeurs manquantes et motifs |
+| S1 | US-06 | Profil de crm.client | Fait | `livrables/S1_bronze_profilage.md` §3 ; `reports/us06_crm_client_profiling.html` | Profil YData sur 100 000 lignes ; six constats chiffrés |
+| S1 | US-07 | Motifs code postal, téléphone, pays | Fait | `livrables/S1_bronze_profilage.md` §3 ; `reports/us07_crm_motifs.csv` | Motifs mesurés ; valeurs manquantes/blanches séparées |
+| S1 | US-08 | Seuils d'alerte sur les clés | Fait | `livrables/S1_bronze_profilage.md` §3 ; `pipelines/test_us08_key_alerts.py` ; `reports/us08_key_uniqueness.csv` ; `reports/us08_soda_duplicate_warning.txt` | 3 clés à 100 % uniques, 0 NULL ; GE échoue et Soda avertit sur le doublon ajouté à une copie |
 | S1 | US-09 | Trois définitions du client actif | À faire | … | |
 | S2 | US-10 | Règles en tests Great Expectations | À faire | … | |
 | S2 | US-11 | Lignes en échec | À faire | … | |

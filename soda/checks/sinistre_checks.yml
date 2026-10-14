@@ -1,6 +1,10 @@
 checks for sinistre:
-  - duplicate_count(sinistre_id) = 0:
-      name: RQ-020 identifiant de sinistre unique
+  - duplicate_count(sinistre_id):
+      name: RQ-020 sinistre_id unique
+      warn: when > 0
+  - missing_count(sinistre_id):
+      name: RQ-020 sinistre_id non nul
+      warn: when > 0
 
   # RQ-014, volet format : code postal à 5 chiffres, adresse renseignée
   - invalid_count(cp_sinistre) = 0:
