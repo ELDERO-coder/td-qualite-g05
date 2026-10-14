@@ -8,15 +8,15 @@ Rappel : un constat = un chiffre mesuré (règle, couche) + la preuve qui le rep
 
 | Source | Table | Lignes | Clé primaire | Observation chiffrée |
 |---|---|---|---|---|
-| crm | client | … | … | … |
-| crm | contrat | … | … | … |
-| crm | sinistre | … | … | … |
-| crm | type_contrat | … | … | … |
-| cif | clients | … | … | … |
-| cif | compte | … | … | … |
-| cif | pays | … | … | … |
+| crm | client | 13 | client_id | 100000 |
+| crm | contrat | 9 | contrat_id | 100000 |
+| crm | sinistre | 10 | sinistre_id | 100000 |
+| crm | type_contrat | 3 | code_type | 12 |
+| cif | clients | 10 | column0 | 40000 |
+| cif | compte | 4 | column0 | 45000 |
+| cif | pays | 2 | code_pays | 250 |
 
-Preuve (notebook, requête) : [À COMPLÉTER]
+Preuve (notebook, requête) : [notebooks/S1_bronze_profilage.ipynb]
 
 ## 2. Bronze et porte B (US-02, US-03)
 

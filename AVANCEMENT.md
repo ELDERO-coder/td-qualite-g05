@@ -6,7 +6,7 @@ Mettez à jour ce tableau à chaque fin de séance (et dès qu'une story change 
 
 | Séance | Story | Intitulé | Statut | Preuve (chemin ou commande) | Remarque |
 |---|---|---|---|---|---|
-| S1 | US-01 | Inventorier les sources | À faire | … | |
+| S1 | US-01 | Inventorier les sources | Fait | [notebooks/S1_bronze_profilage.ipynb] | |
 | S1 | US-02 | Alimenter bronze | À faire | … | |
 | S1 | US-03 | Porte B : réconcilier source et bronze | À faire | … | |
 | S1 | US-04 | Dictionnaire du CIF | À faire | … | |
