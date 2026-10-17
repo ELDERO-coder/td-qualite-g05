@@ -20,27 +20,31 @@ Preuve (notebook, requête) : [notebooks/S1_bronze_profilage.ipynb]
 
 ## 2. Bronze et porte B (US-02, US-03)
 
-Méthode d'ingestion en trois lignes (lecture, conversion, métadonnées, relance du lot) : [À COMPLÉTER]
+Méthode d'ingestion en trois lignes (lecture, conversion, métadonnées, relance du lot) : 
+
+1. Lecture des sept tables CIF et CRM et conservant les valeurs d'origine avec coerce_float=False
+2. Conversion des colonnes en texte, ajout des métadonnées _batch_id et _source_system
+3. Suppression des lignes du lot dans Bronze, puis réinsertion des données. La relance ne crée aucun doublon
 
 Réconciliation RQ-021 (comptage) et RQ-022 (somme de contrôle), pour le lot mesuré :
 
 | Table bronze | Lignes source | Lignes bronze | Écart de comptage | Écart de somme de contrôle |
 |---|---|---|---|---|
-| crm_client | … | … | … | … |
-| crm_contrat | … | … | … | … |
-| crm_sinistre | … | … | … | … |
-| crm_type_contrat | … | … | … | … |
-| cif_clients | … | … | … | … |
-| cif_compte | … | … | … | … |
-| cif_pays | … | … | … | … |
+| crm_client | 100000 | 100000 | 0 | 0 |
+| crm_contrat | 100000 | 100000 | 0 | 0 |
+| crm_sinistre | 100000 | 100000 | 0 | 0 |
+| crm_type_contrat | 12 | 12 | 0 | 0 |
+| cif_clients | 40000 | 40000 | 0 | 0 |
+| cif_compte | 45000 | 45000 | 0 | 0 |
+| cif_pays | 250 | 250 | 0 | 0 |
 
 Épreuves de la porte (à documenter, avec la preuve de chacune) :
 
 | Épreuve | Résultat obtenu | Preuve |
 |---|---|---|
-| Relance du même lot : doublons créés | … | … |
-| Écart introduit volontairement sur une copie : la porte échoue-t-elle ? | … | … |
-| Un problème de conversion rencontré (décimales, NULL, accents) et sa correction | … | … |
+| Relance du même lot : doublons créés | Pas de doublon, toujours 385 262 lignes | notebooks/S1_bronze_profilage.ipynb — cellules US-02 |
+| Écart introduit volontairement sur une copie : la porte échoue-t-elle ? | Oui, cela a échoué | notebooks/S1_bronze_profilage.ipynb — test US-03 |
+| Un problème de conversion rencontré (décimales, NULL, accents) et sa correction | Conversion de DECIMAL en flottant (184,10 -> 184,1). Prévention par coerce_float=False | pipelines/01_ingest_bronze.py |
 
 ## 3. Profil de crm.client (US-06, US-07)
 
