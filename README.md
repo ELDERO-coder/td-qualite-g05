@@ -4,11 +4,13 @@ Ce dépôt est le vôtre pour tout le TD (5 séances). Il contient la pile Docke
 
 ## Démarrer (une fois, séance 1)
 
-1. Créez votre dépôt à partir du modèle (bouton « Use this template », dépôt **privé**), nommé `td-qualite-GROUPE` (par exemple `td-qualite-g03`).
+1. Créez votre dépôt à partir du modèle (bouton « Use this template », dépôt **public**, conformément à la consigne du cours), nommé `td-qualite-GROUPE` (par exemple `td-qualite-g03`).
 2. Ajoutez l'enseignant comme collaborateur en lecture (Settings, Collaborators) et chaque membre du groupe en écriture.
 3. Clonez le dépôt, puis déposez le dossier `data/` fourni par l'enseignant à la racine du clone. Il est ignoré par git : ne le commitez jamais.
-4. Lancez la pile : `docker compose up -d --build`, puis `docker exec dq_jupyter python pipelines/load_sources.py`.
-5. Renseignez `livrables/00_equipe.md` avant la fin de l'ouverture de S1.
+4. Lancez la pile : `docker compose up -d --build`, puis chargez les sources : `docker exec dq_jupyter python pipelines/load_sources.py`.
+5. Chargez et contrôlez Bronze : `docker exec dq_jupyter python pipelines/load_bronze.py --batch-id L-2026-10-14`, puis `docker exec dq_jupyter python pipelines/check_bronze.py --batch-id L-2026-10-14`.
+6. Reproduisez le profil S1 : `docker exec dq_jupyter python pipelines/profile_s1.py`.
+7. Renseignez `livrables/00_equipe.md` avant la fin de l'ouverture de S1.
 
 ## Ce que vous rendez, séance par séance
 

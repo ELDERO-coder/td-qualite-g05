@@ -1,18 +1,18 @@
 # Avancement du groupe
 
-Groupe : [À COMPLÉTER]
+Groupe : Groupe 05
 
 Mettez à jour ce tableau à chaque fin de séance (et dès qu'une story change d'état). Statut : `À faire`, `En cours`, `Fait`, `Bloqué`. La preuve est un chemin du dépôt (notebook, fichier de checks, requête) ou une commande ; pas de preuve, pas de `Fait`.
 
 | Séance | Story | Intitulé | Statut | Preuve (chemin ou commande) | Remarque |
 |---|---|---|---|---|---|
-| S1 | US-01 | Inventorier les sources | À faire | … | |
-| S1 | US-02 | Alimenter bronze | À faire | … | |
-| S1 | US-03 | Porte B : réconcilier source et bronze | À faire | … | |
-| S1 | US-04 | Dictionnaire du CIF | À faire | … | |
-| S1 | US-06 | Profil de crm.client | À faire | … | |
-| S1 | US-07 | Motifs code postal, téléphone, pays | À faire | … | |
-| S1 | US-09 | Trois définitions du client actif | À faire | … | |
+| S1 | US-01 | Inventorier les sources | Fait | `pipelines/profile_s1.py` | Volumes SQL mesurés le 20/10/2026. |
+| S1 | US-02 | Alimenter bronze | Fait | `pipelines/load_bronze.py --batch-id L-2026-10-14` | 385 262 lignes sur sept tables. |
+| S1 | US-03 | Porte B : réconcilier source et bronze | Fait | `pipelines/check_bronze.py --batch-id L-2026-10-14` | RQ-021/RQ-022 historisées; zéro écart après restauration du test. |
+| S1 | US-04 | Dictionnaire du CIF | Fait | `pipelines/profile_s1.py`, `initdb/01_sources.sql` | Dictionnaire exploratoire; validation métier à poursuivre. |
+| S1 | US-06 | Profil de crm.client | Fait | `pipelines/profile_s1.py` | Mesures CRM reproductibles. |
+| S1 | US-07 | Motifs code postal, téléphone, pays | Fait | `pipelines/profile_s1.py` | Motifs et taux mesurés; règles métier à confirmer. |
+| S1 | US-09 | Trois définitions du client actif | En cours | `pipelines/profile_s1.py`, `livrables/S1_bronze_profilage.md` | Vues calculées; définition officielle à valider par Data Owner. |
 | S2 | US-10 | Règles en tests Great Expectations | À faire | … | |
 | S2 | US-11 | Lignes en échec | À faire | … | |
 | S2 | US-13 | Âge à la date de début du contrat | À faire | … | |
