@@ -1,6 +1,6 @@
 # Avancement du groupe
 
-Groupe : [À COMPLÉTER]
+Groupe : 05
 
 Mettez à jour ce tableau à chaque fin de séance (et dès qu'une story change d'état). Statut : `À faire`, `En cours`, `Fait`, `Bloqué`. La preuve est un chemin du dépôt (notebook, fichier de checks, requête) ou une commande ; pas de preuve, pas de `Fait`.
 
