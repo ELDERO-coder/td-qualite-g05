@@ -212,6 +212,7 @@ CREATE TABLE IF NOT EXISTS silver.client (
 CREATE TABLE IF NOT EXISTS gold.client_unique (
   cli_id         CHAR(10) PRIMARY KEY,                -- CLI-000482
   nom_reference  VARCHAR(150) NOT NULL,
+  adresse VARCHAR(255),
   date_naissance DATE NULL,
   cp VARCHAR(10), ville VARCHAR(100), pays_iso CHAR(2),
   telephone VARCHAR(20), email VARCHAR(150),
@@ -228,5 +229,6 @@ CREATE TABLE IF NOT EXISTS gold.xref_identifiants (
   bronze_row_id  BIGINT NOT NULL,
   silver_row_id  BIGINT NOT NULL,
   PRIMARY KEY (source_systeme, source_id),
+  KEY idx_xref_cli_id (cli_id),
   FOREIGN KEY (cli_id) REFERENCES gold.client_unique (cli_id)
 ) ENGINE=InnoDB;

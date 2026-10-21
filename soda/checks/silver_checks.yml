@@ -1,0 +1,44 @@
+checks for client:
+  - failed rows:
+      name: RQ-007 Silver pays reference
+      fail query: |
+        SELECT source_systeme, source_id
+        FROM client c
+        WHERE c._batch_id = 'L-2026-10-14'
+          AND (c.pays_iso IS NULL OR NOT EXISTS (
+            SELECT 1 FROM ref_pays p WHERE p.code_pays = c.pays_iso
+          ))
+  - failed rows:
+      name: RQ-009 Silver type personne
+      fail condition: source_systeme = 'crm' AND (type_personne IS NULL OR type_personne NOT IN ('prospect', 'souscripteur', 'assure'))
+  - failed rows:
+      name: RQ-020 Silver source key unique
+      fail query: |
+        SELECT source_systeme, source_id
+        FROM client
+        WHERE _batch_id = 'L-2026-10-14'
+        GROUP BY source_systeme, source_id
+        HAVING source_id IS NULL OR COUNT(*) > 1
+
+checks for contrat:
+  - failed rows:
+      name: RQ-001 Silver date fin posterieure
+      fail condition: _batch_id = 'L-2026-10-14' AND (date_debut IS NULL OR date_fin IS NULL OR date_fin <= date_debut)
+  - invalid_count(duree_garantie_mois) = 0:
+      name: RQ-010 Silver duree autorisee
+      valid values: [12, 24, 36, 60]
+  - duplicate_count(contrat_id) = 0:
+      name: RQ-020 Silver contrat_id unique
+
+checks for sinistre:
+  - failed rows:
+      name: RQ-014 Silver reference BAN
+      fail query: |
+        SELECT s.sinistre_id
+        FROM sinistre s
+        WHERE s._batch_id = 'L-2026-10-14'
+          AND NOT EXISTS (
+            SELECT 1 FROM ref_ban b WHERE b.id_ban = s.id_ban
+          )
+  - duplicate_count(sinistre_id) = 0:
+      name: RQ-020 Silver sinistre_id unique
