@@ -12,6 +12,24 @@ Ce dépôt est le vôtre pour tout le TD (5 séances). Il contient la pile Docke
 6. Reproduisez le profil S1 : `docker exec dq_jupyter python pipelines/profile_s1.py`.
 7. Renseignez `livrables/00_equipe.md` avant la fin de l'ouverture de S1.
 
+## Rejouer les mesures S2 à S5
+
+Utilisez le même lot pour conserver la traçabilité :
+
+```powershell
+docker exec dq_jupyter python pipelines/run_ge_s2.py --batch-id L-2026-10-14
+docker exec dq_jupyter python pipelines/profile_s3.py --batch-id L-2026-10-14 --reference-date 2026-10-14
+docker exec dq_jupyter soda scan -d crm -c soda/configuration.yml soda/checks/client_checks.yml
+docker exec dq_jupyter soda scan -d crm -c soda/configuration.yml soda/checks/contrat_checks.yml
+docker exec dq_jupyter soda scan -d crm -c soda/configuration.yml soda/checks/sinistre_checks.yml
+docker exec dq_jupyter python pipelines/evaluate_pairs_s4.py
+docker exec dq_jupyter python pipelines/transform_s4.py --batch-id L-2026-10-14
+docker exec dq_jupyter python pipelines/export_history_s5.py --batch-id L-2026-10-14 --output-dir reports
+docker exec dq_jupyter python pipelines/certify_s5.py --batch-id L-2026-10-14
+```
+
+Un code retour non nul peut être le résultat attendu : GE/Soda signalent les anomalies des données sources et le certificat produit `NO_GO` tant que des règles bloquantes ne sont pas mesurées et conformes dans leur couche attendue. Les exports de lignes S2 et les rapports générés sous `reports/` restent locaux et sont ignorés par Git. La publication CRM est volontairement refusée tant que RQ-025 et les tables cibles ne sont pas implémentées.
+
 ## Ce que vous rendez, séance par séance
 
 | Séance | Livrable | Étiquette (tag) à poser à la fin |
