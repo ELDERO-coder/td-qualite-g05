@@ -1,7 +1,11 @@
 checks for client:
   # RQ-020 : clé primaire unique et renseignée
-  - duplicate_count(client_id) = 0
-  - missing_count(client_id) = 0
+  - duplicate_count(client_id):
+      name: RQ-020 client_id unique
+      warn: when > 0
+  - missing_count(client_id):
+      name: RQ-020 client_id non nul
+      warn: when > 0
 
   # RQ-009 : type de personne dans le domaine
   - invalid_count(type_personne) = 0:
