@@ -1,0 +1,65 @@
+{
+  "data_asset_type": null,
+  "expectation_suite_name": "assurconnect_bronze_crm_contrat_suite",
+  "expectations": [
+    {
+      "expectation_type": "expect_column_pair_values_a_to_be_greater_than_b",
+      "kwargs": {
+        "column_A": "date_fin",
+        "column_B": "date_debut",
+        "or_equal": false
+      },
+      "meta": {
+        "rule_id": "RQ-001"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "age_debut",
+        "min_value": 18
+      },
+      "meta": {
+        "rule_id": "RQ-002"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_in_set",
+      "kwargs": {
+        "column": "duree_garantie_mois",
+        "value_set": [
+          12,
+          24,
+          36,
+          60
+        ]
+      },
+      "meta": {
+        "nuls_en_echec": true,
+        "rule_id": "RQ-010"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "cle"
+      },
+      "meta": {
+        "rule_id": "RQ-020"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_unique",
+      "kwargs": {
+        "column": "cle"
+      },
+      "meta": {
+        "rule_id": "RQ-020"
+      }
+    }
+  ],
+  "ge_cloud_id": null,
+  "meta": {
+    "great_expectations_version": "0.18.19"
+  }
+}
