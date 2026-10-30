@@ -1,0 +1,3 @@
+checks for crm_contrat:
+  - values in (assure_id) must exist in crm_client (client_id):
+      name: RQ-013 avant traitement de la sentinelle
