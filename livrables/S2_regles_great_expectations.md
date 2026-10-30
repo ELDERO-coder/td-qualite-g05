@@ -46,35 +46,37 @@ Export complet : [reports/echecs/lignes_en_echec_RQ-*.csv]. Échantillon comment
 
 | Date de référence | Définition de l'âge | Lignes en échec | Preuve |
 |---|---|---|---|
-| Date de début du contrat | … | … | … |
-| Date du jour | … | … | … |
+| Date de début du contrat | Age révolu du souscripteur à la signature du contrat | 301 | Résultats US-13 du notebook |
+| Date du jour (1/10/26) | Age révolu du souscripteur à la date référence fixe | 157 | Résultats US-13 du notebook |
 
-Un cas où « à la date du jour » donne un autre résultat, et pourquoi : [À COMPLÉTER]
+Un cas où « à la date du jour » donne un autre résultat, et pourquoi :
+Sur 92 996 contrats, 144 changent de verdict selon la date utilisée. Une personne peut avoir été mineur au moment de la signature, et être majeure à la date de référence. Il pourrait être considéré à tort comme conforme si on utilise l'âge de la date de référence.
 
 ## 4. Mesure de référence sur bronze (US-15)
 
-Écrite dans `dq.dq_history`, couche BRONZE, lot : [À COMPLÉTER]
+Écrite dans `dq.dq_history`, couche BRONZE, lot : L-2026-10-01
 
 | Dimension | Règles | Taux moyen | Règle la plus faible | Constat |
 |---|---|---|---|---|
-| Unicité | … | … | … | … |
-| Complétude | … | … | … | … |
-| Validité | … | … | … | … |
-| Cohérence | … | … | … | … |
+| Unicité | RQ-020 | 100 % | RQ-020 | Aucun doublon de clé primaire détecté |
+| Complétude | RQ-003 | 94 % | RQ-033 | 5 989 téléphones manquants chez les souscripteurs |
+| Validité | RQ-002, RQ-005, RQ-009, RQ-010 | 99.23 % | RQ-005, 98.47 % | Codes postaus invalides, mineurs à la signature et valeurs hors domaine |
+| Cohérence | RQ-001, RQ-002 | 99.20 % | RQ-001 | 800 contrats présentent une incohérence entre les dates de début et de fin |
 
-Phrase de synthèse (« Voici la qualité de ce qui nous est livré : … ») : [À COMPLÉTER]
+Phrase de synthèse (« Voici la qualité de ce qui nous est livré : … ») : 
+Les clés primaires sont conformes à 100 %, mais nous avons vus des anomalies, comme les 5 989 téléphones manquants. Certaines règles bloquantes restent sous leur seuil de conformité.
 
 ## 5. Critères de fin
 
-- [ ] Chaque expectation porte l'identifiant de sa règle.
-- [ ] La même suite se relance sur une autre base ou table sans modification de code.
-- [ ] La mesure de référence est dans `dq.dq_history` avec le lot, la couche, les lignes testées et les échecs.
-- [ ] Les règles sont exécutables d'un seul geste (script ou notebook relançable de bout en bout).
+- [x] Chaque expectation porte l'identifiant de sa règle.
+- [x] La même suite se relance sur une autre base ou table sans modification de code.
+- [x] La mesure de référence est dans `dq.dq_history` avec le lot, la couche, les lignes testées et les échecs.
+- [x] Les règles sont exécutables d'un seul geste (script ou notebook relançable de bout en bout).
 
 ## 6. Difficultés, écarts avec l'attendu, reprise
 
-Difficultés rencontrées et temps perdu : [À COMPLÉTER]
+Difficultés rencontrées et temps perdu : PLus ou moins la mêê choses que pour la séance 1 avec l'organisation et la compréhension des tâches à réaliser.
 
-Point de reprise utilisé (oui / non, lequel) : [À COMPLÉTER]
+Point de reprise utilisé (oui / non, lequel) : Non
 
-Ce que nous ferions autrement : [À COMPLÉTER]
+Ce que nous ferions autrement : On pourrait mieux s'organiser, mais avec le distanciel, cela n'est pas forcément facile.
