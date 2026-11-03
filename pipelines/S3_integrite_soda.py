@@ -146,3 +146,85 @@ print(pd.DataFrame([{
 
 # Après : le filtre `assure_id <> '0'` du fichier contrat_checks.yml revient à remplacer la sentinelle par NULL, donc à l'exclure du contrôle.
 # Convention à documenter dans livrables/S3_integrite_soda.md : la sentinelle '0' signifie « pas d'assuré distinct » ; elle devient NULL en silver.
+
+
+# %% US-18 - Statuts de personne cohérents (RQ-015, RQ-016)
+# RQ-015 : un prospect n'a aucun contrat ; RQ-016 : un souscripteur a au moins un contrat. Les deux contrôles viennent du scan de la cellule US-12.
+statuts = pd.DataFrame([
+    ("RQ-015 - prospect titulaire d'un contrat", total("SELECT COUNT(*) FROM bronze.crm_client WHERE _batch_id = :b"), valeur("RQ-015")),
+    ("RQ-016 - souscripteur sans contrat", total("SELECT COUNT(*) FROM bronze.crm_client WHERE _batch_id = :b AND type_personne = 'souscripteur'"), valeur("RQ-016")),
+], columns=["regle", "testees", "echecs"])
+print(statuts.to_string(index=False))
+
+# Liste des cas de RQ-015 : le nombre de contrats par prospect aide à proposer la correction
+prospects = lire("""SELECT k.client_id, k.type_personne, COUNT(*) AS nb_contrats, MIN(c.date_debut) AS premier_contrat
+    FROM bronze.crm_client k JOIN bronze.crm_contrat c ON c.souscripteur_id = k.client_id AND c._batch_id = :b
+    WHERE k.type_personne = 'prospect' AND k._batch_id = :b GROUP BY k.client_id, k.type_personne ORDER BY nb_contrats DESC""", b=BATCH)
+print(prospects.head(10).to_string(index=False))
+print("Prospects qui détiennent un contrat :", len(prospects))
+
+# Liste des cas de RQ-016
+sans_contrat = lire("""SELECT k.client_id, k.nom, k.prenom, k.date_creation FROM bronze.crm_client k
+    LEFT JOIN bronze.crm_contrat c ON c.souscripteur_id = k.client_id AND c._batch_id = :b
+    WHERE k.type_personne = 'souscripteur' AND k._batch_id = :b AND c.contrat_id IS NULL""", b=BATCH)
+print(sans_contrat.head(10).to_string(index=False))
+# À vous : la règle de correction du statut (par exemple « un prospect qui détient un contrat devient souscripteur »), à faire valider par le Data Owner.
+
+
+# %% US-19 - Un sinistre survient pendant la période de garantie (RQ-017)
+rattaches = total("""SELECT COUNT(*) FROM bronze.crm_sinistre s JOIN bronze.crm_contrat c ON c.contrat_id = s.contrat_id AND c._batch_id = :b WHERE s._batch_id = :b""")
+hors_periode = valeur("RQ-017")
+print(f"Sinistres rattachés à un contrat : {rattaches} ; hors période de garantie (Soda) : {hors_periode} ({100 * hors_periode / rattaches:.2f} %)")
+
+# Faux positif possible : le sinistre est hors période pour son contrat, mais le même souscripteur détient un autre contrat qui le couvrirait (renouvellement)
+faux = lire("""SELECT COUNT(*) AS hors_periode,
+    COALESCE(SUM(EXISTS (SELECT 1 FROM bronze.crm_contrat c2
+                        WHERE c2._batch_id = :b AND c2.souscripteur_id = c.souscripteur_id AND c2.contrat_id <> c.contrat_id
+                        AND s.date_survenance BETWEEN c2.date_debut AND c2.date_fin)),0) AS couverts_par_un_autre_contrat
+    FROM bronze.crm_sinistre s JOIN bronze.crm_contrat c ON c.contrat_id = s.contrat_id AND c._batch_id = :b
+    WHERE s._batch_id = :b AND NOT (s.date_survenance BETWEEN c.date_debut AND c.date_fin)""", b=BATCH)
+print(faux.to_string(index=False))
+# À discuter dans le livrable : ces sinistres sont-ils des erreurs de gestion ou des rattachements au mauvais contrat ?
+
+
+# %% US-14 - Une définition unique du client actif (RQ-018, fiche CD-001)
+# Reprenez vos trois comptages de S1 (US-09). Une définition unique tient dans une vue que les trois directions interrogent :
+# plus aucune ne recalcule le chiffre de son côté. Le contrôle RQ-018 du fichier contrat_checks.yml mesure l'écart entre la définition Commerciale
+# (au moins un contrat) et la fiche CD-001 ; il a été lancé avec les autres dans la cellule US-12.
+print("RQ-018 : écart entre la définition Commerciale et la fiche CD-001 (Soda) :", valeur(controle=CTRL[CTRL.controle.str.startswith("ecart_client_actif")].controle.iloc[0]), "clients")
+
+# Condition de la fiche CD-001 : contrat en cours à DATE_REF et cotisation depuis COTISATION_MIN
+# Adaptation : condition SQL complétée à partir des consignes du professeur.
+CONDITION_CD001 = """
+    date_debut <= '2026-10-01'
+    AND date_fin >= '2026-10-01'
+    AND date_derniere_cotisation >= '2026-07-01'
+"""
+
+if CONDITION_CD001:
+    executer(f"CREATE OR REPLACE VIEW dq.v_client_actif_bronze AS SELECT DISTINCT souscripteur_id AS client_id FROM bronze.crm_contrat WHERE {CONDITION_CD001}")
+    print(lire("SELECT COUNT(*) AS clients_actifs FROM dq.v_client_actif_bronze").to_string(index=False))
+else:
+    print("US-14 : écrivez la condition de la fiche CD-001 dans CONDITION_CD001 ; la vue sera republiée en gold à l'étape US-27 (gold.v_client_actif).")
+
+
+# %% US-20 - Dépendance code postal / commune : règle brute, puis référentiel postal (RQ-006) (priorité Should)
+fr = lire("SELECT cp, ville FROM bronze.crm_client WHERE _batch_id = :b AND pays = 'FR'", b=BATCH)
+ref = lire("SELECT code_postal, commune FROM silver.ref_postal")
+
+# 20.1 Règle brute : « une commune a un seul code postal ». Elle se heurte aux communes à plusieurs codes postaux (et aux zéros initiaux perdus).
+brut = fr.groupby("ville").agg(codes_postaux=("cp", "nunique"), lignes=("cp", "size"))
+print(brut[brut.codes_postaux > 1].sort_values("lignes", ascending=False).head(15))
+
+# 20.2 Le référentiel confirme que certaines communes ont réellement plusieurs codes postaux : ce sont les faux positifs de la règle brute.
+multi = ref.groupby("commune").size()
+print(multi[multi > 1].sort_values(ascending=False).head(15))
+
+# 20.3 Règle recalée : après restauration du zéro initial, le couple (code postal, commune) existe-t-il dans le référentiel ?
+fr["code_postal"] = fr.cp.str.zfill(5)
+couples = set(zip(ref.code_postal, ref.commune))
+fr["couple_valide"] = [(c, v) in couples for c, v in zip(fr.code_postal, fr.ville)]
+print({"adresses_france": len(fr), "couples_dans_le_referentiel": int(fr.couple_valide.sum()), "couples_absents": int((~fr.couple_valide).sum())})
+
+# 20.4 Le cas Beaumont : deux communes homonymes, deux codes postaux. Que dit chaque ligne du référentiel ?
+print(fr[fr.ville == "Beaumont"].groupby(["cp", "ville"]).agg(lignes=("cp", "size"), couple_valide=("couple_valide", "max")).sort_values("lignes", ascending=False))

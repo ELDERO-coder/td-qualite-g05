@@ -56,11 +56,15 @@ Pourquoi le premier contrôle est trompeur : Sans filtre, soda considère les 40
 
 | Règle | Couche | Lignes testées | Échecs | Taux |
 |---|---|---|---|---|
-| RQ-015 (prospect sans contrat) | … | … | … | … |
-| RQ-016 | … | … | … | … |
-| RQ-017 (sinistre hors garantie) | … | … | … | … |
+| RQ-015 (prospect sans contrat) | Bronze | 100 000 | 479 | 0.479 % |
+| RQ-016 | Bronze | 49 898 | 955 | 1.914 % |
+| RQ-017 (sinistre hors garantie) | Bronze | 100 000 | 1 200 | 1.2 % |
 
-Règle de correction du statut proposée au Data Owner (texte, rôle, date) : [À COMPLÉTER]. Reportez-la dans `JOURNAL_DECISIONS.md`.
+Règle de correction du statut proposée au Data Owner (texte, rôle, date) :  Reportez-la dans `JOURNAL_DECISIONS.md`.
+Pour RQ-015, on propose reclasser en "souscripteur" les prospects possédant au moins un contrat, après vérification de leur situation.
+Pou RQ-016, vérifier les 955 souscripteurs sans contrat avant de proposer
+
+
 
 ## 5. Définition unique du client actif (US-14)
 
@@ -68,23 +72,29 @@ Requête (chemin) : [À COMPLÉTER]
 
 | Direction | Chiffre obtenu avec la requête unique |
 |---|---|
-| Commerciale | … |
-| Sinistres | … |
-| Risques | … |
+| Commerciale | 38 049 |
+| Sinistres | 38 049 |
+| Risques | 38 049 |
 
-Contrôle RQ-018 (écart entre définitions) : [À COMPLÉTER]
+Contrôle RQ-018 (écart entre définitions) : 
+Le contrôle Soda mesure un écart de 11 878 clients entre la définition commerciale et celle codée dans le contrôle RQ-018.
+
+La requête unique fondée sur la fiche CD-001 donne 38 049 clients actifs. Les trois directions doivent interroger cette même vue afin de partager un chiffre de référence commun.
+
+Écart à signaler : le contrôle Soda RQ-018 ne reproduit pas exactement la condition CD-001 utilisée dans la vue. Il faut harmoniser les deux requêtes pour obtenir une comparaison fiable.
+
 
 ## 6. Critères de fin
 
-- [ ] Un scan renvoie un code retour non nul quand une règle bloquante échoue.
-- [ ] Chaque contrôle porte l'identifiant de sa règle et la couche mesurée.
-- [ ] Les trois directions obtiennent le même chiffre avec la requête unique.
-- [ ] La valeur sentinelle est expliquée et traitée.
+- [x] Un scan renvoie un code retour non nul quand une règle bloquante échoue.
+- [x] Chaque contrôle porte l'identifiant de sa règle et la couche mesurée.
+- [x] Les trois directions obtiennent le même chiffre avec la requête unique.
+- [x] La valeur sentinelle est expliquée et traitée.
 
 ## 7. Difficultés, écarts avec l'attendu, reprise
 
-Difficultés rencontrées et temps perdu : [À COMPLÉTER]
+Difficultés rencontrées et temps perdu : Il y a eu quelque modification semblabla à des erreurs de saisies à réaliser, et l'organisation est toujours un peu compliqué.
 
-Point de reprise utilisé (oui / non, lequel) : [À COMPLÉTER]
+Point de reprise utilisé (oui / non, lequel) : Non
 
-Ce que nous ferions autrement : [À COMPLÉTER]
+Ce que nous ferions autrement : Toujours le travail en équipe
