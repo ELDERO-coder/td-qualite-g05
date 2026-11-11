@@ -47,7 +47,7 @@ Export complet : [reports/echecs/lignes_en_echec_RQ-*.csv]. Échantillon comment
 | Date de référence | Définition de l'âge | Lignes en échec | Preuve |
 |---|---|---|---|
 | Date de début du contrat | Age révolu du souscripteur à la signature du contrat | 301 | Résultats US-13 du notebook |
-| Date du jour (1/10/26) | Age révolu du souscripteur à la date référence fixe | 157 | Résultats US-13 du notebook |
+| Date du jour (21/10/26) | Age révolu du souscripteur à la date référence fixe | 157 | Résultats US-13 du notebook |
 
 Un cas où « à la date du jour » donne un autre résultat, et pourquoi :
 Sur 92 996 contrats, 144 changent de verdict selon la date utilisée. Une personne peut avoir été mineur au moment de la signature, et être majeure à la date de référence. Il pourrait être considéré à tort comme conforme si on utilise l'âge de la date de référence.
@@ -59,7 +59,7 @@ Sur 92 996 contrats, 144 changent de verdict selon la date utilisée. Une person
 | Dimension | Règles | Taux moyen | Règle la plus faible | Constat |
 |---|---|---|---|---|
 | Unicité | RQ-020 | 100 % | RQ-020 | Aucun doublon de clé primaire détecté |
-| Complétude | RQ-003 | 94 % | RQ-033 | 5 989 téléphones manquants chez les souscripteurs |
+| Complétude | RQ-003 | 94 % | RQ-003 | 5 989 téléphones manquants chez les souscripteurs |
 | Validité | RQ-002, RQ-005, RQ-009, RQ-010 | 99.23 % | RQ-005, 98.47 % | Codes postaus invalides, mineurs à la signature et valeurs hors domaine |
 | Cohérence | RQ-001, RQ-002 | 99.20 % | RQ-001 | 800 contrats présentent une incohérence entre les dates de début et de fin |
 
