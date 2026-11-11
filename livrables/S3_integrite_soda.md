@@ -68,8 +68,7 @@ Pou RQ-016, vérifier les 955 souscripteurs sans contrat avant de proposer
 
 ## 5. Définition unique du client actif (US-14)
 
-Requête (chemin) : [À COMPLÉTER]
-
+Requête (chemin) : pipelines/S3_integrite_soda.py (bloc US-14). Vue SQL créée : dq.v_client_actif_bronze.
 | Direction | Chiffre obtenu avec la requête unique |
 |---|---|
 | Commerciale | 38 049 |
