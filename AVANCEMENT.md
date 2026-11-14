@@ -35,6 +35,6 @@ Mettez à jour ce tableau à chaque fin de séance (et dès qu'une story change 
 | S5 | US-31 | Certificat de qualité | En cours | `pipelines/certify_s5.py`; certificat `CERT-L20261014-132851` | NO_GO réel : 2/19 bloquantes mesurées et conformes, sans signataire. |
 | S5 | US-32 | Publication vers le CRM | En cours | `pipelines/publish_s5.py` | Refus NO_GO testé; chargeur RQ-025 et tables cible absents. |
 | S5 | US-34 | Catalogue, propriétaires, lineage | En cours | `catalogue/gold_client_unique.md` | Fiche et lineage préparés; Data Steward S5 et approbation des rôles à confirmer. |
-| S5 | US-35 | Dossier go/no-go | À faire | … | |
+| S5 | US-35 | Dossier go/no-go | En cours | `livrables/DOSSIER_GO_NOGO.md`; `livrables/CERTIFICAT_QUALITE.csv` | Dossier préparé et certificat joint; signature NO-GO déclarée signée, date/preuve à joindre. |
 
 Stories d'extension (facultatives) : US-05, US-08, US-20, US-26, US-33. Ajoutez une ligne si vous les traitez.

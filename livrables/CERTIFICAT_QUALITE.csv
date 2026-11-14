@@ -1,0 +1,2 @@
+certificat_id;batch_id;nb_bloquantes_testees;nb_bloquantes_ok;decision;signataire;empreinte_gold;commentaire;emis_le
+CERT-L20261014-132851;L-2026-10-14;2;2;NO_GO;;85b9884af4b72ecb46a8784e86402625befbc5e6eb41cc1091fbd6e9ae05e01e;Généré par pipelines/certify_s5.py;2026-10-21 13:28:51

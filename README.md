@@ -30,6 +30,14 @@ docker exec dq_jupyter python pipelines/certify_s5.py --batch-id L-2026-10-14
 
 Un code retour non nul peut être le résultat attendu : GE/Soda signalent les anomalies des données sources et le certificat produit `NO_GO` tant que des règles bloquantes ne sont pas mesurées et conformes dans leur couche attendue. Les exports de lignes S2 et les rapports générés sous `reports/` restent locaux et sont ignorés par Git. La publication CRM est volontairement refusée tant que RQ-025 et les tables cibles ne sont pas implémentées.
 
+## Préparer la soutenance du 18 novembre 2026
+
+Le support court est dans [livrables/Soutenance_Groupe05_AssurConnect.pptx](./livrables/Soutenance_Groupe05_AssurConnect.pptx) : 8 diapositives principales et 3 annexes. Le dossier et l’export réel du certificat sont dans [livrables/DOSSIER_GO_NOGO.md](./livrables/DOSSIER_GO_NOGO.md) et [livrables/CERTIFICAT_QUALITE.csv](./livrables/CERTIFICAT_QUALITE.csv). Le script oral existe en [Markdown](./livrables/SCRIPT_ORAL_SOUTENANCE.md) et en [PDF](./livrables/SCRIPT_ORAL_SOUTENANCE.pdf).
+
+Pour la démonstration de deux minutes, démarrez la pile avec `docker compose up -d`, ouvrez JupyterLab sur `http://localhost:8888/lab?token=assurconnect`, puis exécutez [notebooks/Untitled.ipynb](./notebooks/Untitled.ipynb). Le notebook relit le certificat et sa couverture en lecture seule. Il ne faut pas relancer `pipelines/certify_s5.py` pendant la démonstration : ce script émet et enregistre un nouveau certificat.
+
+La recommandation actuelle est NO-GO. Le groupe déclare la décision signée par Oussama, Data Owner; joindre la date et la preuve de signature au dossier remis. Les rôles S5 sont confirmés, mais le détail des contributions et des stories reste à partager dans `livrables/00_equipe.md`.
+
 ## Ce que vous rendez, séance par séance
 
 | Séance | Livrable | Étiquette (tag) à poser à la fin |
