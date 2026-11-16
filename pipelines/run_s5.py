@@ -15,6 +15,7 @@ from build_silver import BATCH_DEFAULT, DB_URL_DEFAULT, ROOT, key, present
 
 
 REPORTS = ROOT / "reports"
+DELIVERABLES = ROOT / "livrables"
 CERTIFICATE_PREFIX = "CERT-"
 ACTIVE_TARGET = 37643
 LAYER_ORDER = ("BRONZE", "SILVER", "GOLD", "CRM")
@@ -208,8 +209,12 @@ def latest_metrics(connection, batch_id):
 
 def write_history_report(connection, batch_id):
     REPORTS.mkdir(parents=True, exist_ok=True)
+    DELIVERABLES.mkdir(parents=True, exist_ok=True)
     by_rule = latest_metrics(connection, batch_id)
-    by_rule.to_csv(REPORTS / "us29_historique_mesures.csv", index=False, encoding="utf-8-sig")
+    by_rule.to_csv(
+        DELIVERABLES / "us29_historique_mesures.csv",
+        index=False, encoding="utf-8-sig",
+    )
 
     dimensions = (
         by_rule.groupby(["couche", "dimension"], dropna=False)
@@ -229,7 +234,8 @@ def write_history_report(connection, batch_id):
         .reset_index()
     )
     dimensions.to_csv(
-        REPORTS / "us29_kpi_dimensions.csv", index=False, encoding="utf-8-sig"
+        DELIVERABLES / "us29_kpi_dimensions.csv",
+        index=False, encoding="utf-8-sig",
     )
     write_dimension_chart(dimensions, REPORTS / "us30_evolution_qualite.svg")
     return by_rule, dimensions
@@ -766,7 +772,7 @@ def certify(engine, batch_id):
             )[:500],
         })
         pd.DataFrame(checks).to_csv(
-            REPORTS / "us31_controles_certificat.csv",
+            DELIVERABLES / "us31_controles_certificat.csv",
             index=False, encoding="utf-8-sig",
         )
     print(
@@ -787,7 +793,8 @@ def publish(engine, batch_id):
         print(str(error))
         raise SystemExit(2) from error
     pd.DataFrame(reconciliation).to_csv(
-        REPORTS / "us32_reconciliation.csv", index=False, encoding="utf-8-sig"
+        DELIVERABLES / "us32_reconciliation.csv",
+        index=False, encoding="utf-8-sig",
     )
     print("Publication CRM réussie ; RQ-025 conforme pour les trois tables.")
 
@@ -911,14 +918,16 @@ def self_test(engine, batch_id):
         pass
 
     pd.DataFrame(checks, columns=("scenario", "message", "reussi")).to_csv(
-        REPORTS / "us32_self_test.csv", index=False, encoding="utf-8-sig"
+        DELIVERABLES / "us32_self_test.csv",
+        index=False, encoding="utf-8-sig",
     )
     pd.DataFrame(reconciliation).to_csv(
-        REPORTS / "us32_self_test_reconciliation.csv",
+        DELIVERABLES / "us32_self_test_reconciliation.csv",
         index=False, encoding="utf-8-sig",
     )
     pd.DataFrame(degraded_test).to_csv(
-        REPORTS / "us31_no_go_test.csv", index=False, encoding="utf-8-sig"
+        DELIVERABLES / "us31_no_go_test.csv",
+        index=False, encoding="utf-8-sig",
     )
     for scenario, message, passed in checks:
         print(f"{'PASS' if passed else 'FAIL'} {scenario}: {message}")
@@ -1010,6 +1019,7 @@ def main():
     parser.add_argument("--url", default=os.environ.get("DQ_DB_URL", DB_URL_DEFAULT))
     args = parser.parse_args()
     REPORTS.mkdir(parents=True, exist_ok=True)
+    DELIVERABLES.mkdir(parents=True, exist_ok=True)
     engine = create_engine(args.url)
     try:
         if args.action == "history":

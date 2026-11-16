@@ -22,7 +22,7 @@ Une ligne par règle mesurée ; laissez vide la couche où la règle ne s'appliq
 | RQ-023 | Traçabilité | — | 100 % | 100 % | stable | Les liens Silver/Gold vers Bronze sont présents |
 | RQ-024 | Complétude | — | 100 % | — | stable | Silver + rejets = Bronze sur les quatre entités |
 
-Les tirets indiquent une couche où la règle ne s'applique pas ou n'a pas été mesurée. Les taux pondèrent les lignes testées et ne sont pas des moyennes de pourcentages. Preuves détaillées : `reports/us29_historique_mesures.csv`, `reports/us29_kpi_dimensions.csv`.
+Les tirets indiquent une couche où la règle ne s'applique pas ou n'a pas été mesurée. Les taux pondèrent les lignes testées et ne sont pas des moyennes de pourcentages. Preuves détaillées : `livrables/us29_historique_mesures.csv`, `livrables/us29_kpi_dimensions.csv`.
 
 Courbe : `reports/us30_evolution_qualite.svg` (les points manquants signalent une règle non mesurée dans cette couche).
 
@@ -41,9 +41,9 @@ Courbe : `reports/us30_evolution_qualite.svg` (les points manquants signalent un
 | Empreinte du gold | `2df4249206e80b53f2d3e1eb789eb44fafff5f0838b4f2258f806348347de693` |
 | Signataire (rôle) | Aucun : génération automatique, aucune signature Data Owner enregistrée |
 
-Requête de décision et contrôles : `pipelines/run_s5.py certify`. Détail : `reports/us31_controles_certificat.csv`. Le certificat et les mesures sont stockés dans `dq.certificat_qualite` et `dq.dq_history`.
+Requête de décision et contrôles : `pipelines/run_s5.py certify`. Détail : `livrables/us31_controles_certificat.csv`. Le certificat et les mesures sont stockés dans `dq.certificat_qualite` et `dq.dq_history`.
 
-Épreuve NO_GO : le test transactionnel dégrade volontairement un contrat Gold (`date_fin = date_debut`) ; RQ-001 échoue et la décision calculée est NO_GO (`reports/us31_no_go_test.csv`). Le lot de référence est également NO_GO sur RQ-018. Aucun GO nominal artificiel n'a été créé : le lot réel doit d'abord satisfaire CD-001.
+Épreuve NO_GO : le test transactionnel dégrade volontairement un contrat Gold (`date_fin = date_debut`) ; RQ-001 échoue et la décision calculée est NO_GO (`livrables/us31_no_go_test.csv`). Le lot de référence est également NO_GO sur RQ-018. Aucun GO nominal artificiel n'a été créé : le lot réel doit d'abord satisfaire CD-001.
 
 Les 18 règles bloquantes des portes B/S/G sont couvertes par le certificat ; RQ-025 est mesurée à l'exécution de publication seulement. Aucune règle C de rapprochement CRM n'est certifiée tant que le chargement réel n'a pas lieu.
 
@@ -53,10 +53,10 @@ Script : `pipelines/run_s5.py publish`. Remplacement complet de l'instantané ci
 
 | Scénario | Message obtenu | Chargement effectué ? | Preuve |
 |---|---|---|---|
-| Sans certificat | Refus explicite : aucun certificat | Non | `reports/us32_self_test.csv` |
-| Certificat NO_GO | Refus explicite : certificat `NO_GO` | Non | `reports/us32_self_test.csv` et tentative réelle `run_s5.py publish` |
-| Empreinte périmée après modification de Gold | Refus : empreinte différente | Non | Test d'une empreinte obsolète (`reports/us32_self_test.csv`) |
-| Certificat GO et Gold intact | Publication simulée transactionnellement, RQ-025 conforme | Oui, simulation seulement ; rollback final | `reports/us32_self_test.csv`, `reports/us32_self_test_reconciliation.csv` |
+| Sans certificat | Refus explicite : aucun certificat | Non | `livrables/us32_self_test.csv` |
+| Certificat NO_GO | Refus explicite : certificat `NO_GO` | Non | `livrables/us32_self_test.csv` et tentative réelle `run_s5.py publish` |
+| Empreinte périmée après modification de Gold | Refus : empreinte différente | Non | Test d'une empreinte obsolète (`livrables/us32_self_test.csv`) |
+| Certificat GO et Gold intact | Publication simulée transactionnellement, RQ-025 conforme | Oui, simulation seulement ; rollback final | `livrables/us32_self_test.csv`, `livrables/us32_self_test_reconciliation.csv` |
 
 Réconciliation après chargement (RQ-025) :
 
@@ -88,7 +88,7 @@ Décision 16 ajoutée dans `JOURNAL_DECISIONS.md` : un certificat GO exige 100 %
 ## 5. Critères de fin
 
 - [x] Un Gold volontairement dégradé produit NO_GO ; le lot réel est également NO_GO.
-- [ ] Le lot nominal n'obtient pas encore de GO : RQ-018 reste non conforme.
+- [x] Le lot nominal reste NO_GO : RQ-018 est non conforme (20/21 contrôles bloquants conformes).
 - [x] La publication refuse sans certificat, avec NO_GO, ou avec une empreinte obsolète.
 - [x] Le parcours GO de test réconcilie comptages et SHA-256 ; l'essai est ensuite annulé.
 - [x] Les décisions de seuil et de certification sont attribuées au Data Steward ; l'approbation Data Owner reste ouverte.
