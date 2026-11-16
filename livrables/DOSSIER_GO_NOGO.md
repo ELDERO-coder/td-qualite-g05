@@ -45,7 +45,7 @@ Hypothèses à faire valider : seuils de rapprochement 70/69 ; survie par attrib
 
 ## 4. La décision
 
-Seuils retenus et justifications : décisions 13–16 de `JOURNAL_DECISIONS.md`. Ils sont des propositions Data Steward, sauf la décision opérationnelle de suspendre la publication du lot non conforme.
+Seuils retenus et justifications : décisions 5–8 de `JOURNAL_DECISIONS.md`. Ils sont des propositions Data Steward, sauf la décision opérationnelle de suspendre la publication du lot non conforme.
 
 Rôles : le Data Owner métier arbitre les définitions et seuils ; le Data Steward contrôle qualité, lineage et écarts ; l'équipe CRM exécute le chargement certifié. Le Data Owner et l'équipe CRM restent à nommer.
 

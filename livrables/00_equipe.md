@@ -20,6 +20,6 @@ Chaque membre décrit en deux lignes ce qu'il a réalisé. L'enseignant la compa
 
 | Membre | Contribution | Stories principales |
 |---|---|---|
-| Dewanou ELOHOUNKPON | Chargement et réconciliation de la couche Bronze ; profilage CIF et CRM, motifs et unicité des clés. | US-02, US-03, US-04, US-06, US-07, US-08 |
+| Dewanou ELOHOUNKPON | Chargement Bronze, réconciliation et profilage CIF/CRM ; contrôles GE/Soda, standardisation Silver, Golden Record et traçabilité. | US-01 à US-19 (hors US-05), US-21 à US-32, US-34, US-35 |
 | Oussama SEDDIK | … | … |
 | Paul PONCET | … | … |

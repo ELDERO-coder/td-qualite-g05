@@ -87,7 +87,7 @@ Règle de survie par attribut :
 | Téléphone | CRM 82 642 groupes ; CIF 20 957 | Format valide puis valeur présente ; CRM en cas d'égalité | Un numéro valide peut être obsolète |
 | Courriel | CRM 75 181 groupes ; CIF 14 175 | Format valide puis valeur présente ; CRM en cas d'égalité | Le format n'atteste pas que la boîte existe |
 
-Les seuils et la survie sont consignés comme propositions Data Steward dans `JOURNAL_DECISIONS.md` (décisions 13 et 14), en attente du Data Owner.
+Les seuils et la survie sont consignés comme propositions Data Steward dans `JOURNAL_DECISIONS.md` (décisions 5 et 6), en attente du Data Owner.
 
 ## 4. Gold et client actif (US-27)
 
