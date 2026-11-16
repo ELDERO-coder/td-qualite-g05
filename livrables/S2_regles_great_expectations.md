@@ -67,7 +67,7 @@ Mesures du lot `L-2026-10-14` inscrites dans `dq.dq_history` avec couche, règle
 ## 5. Critères de fin
 
 - [x] Chaque expectation porte l'identifiant de sa règle dans ses métadonnées.
-- [x] L'URL de connexion est paramétrable par `--url`. La base cible doit fournir les mêmes schémas et tables ; les règles restent définies dans le script. La connexion à une instance distincte n'a pas été testée dans ce TP.
+- [ ] L'URL de connexion est paramétrable par `--url`, mais une instance distincte avec les mêmes schémas n'a pas été disponible pour valider la relance ; les règles restent définies dans le script.
 - [x] Les mesures sont enregistrées dans `dq.dq_history` avec lot et couche.
 - [x] Une commande exécute les règles, les exports d'échecs et la mesure d'âge.
 
