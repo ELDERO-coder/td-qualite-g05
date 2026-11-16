@@ -20,8 +20,8 @@ Mettez à jour ce tableau à chaque fin de séance (et dès qu'une story change 
 | S2 | US-15 | Mesure de référence sur bronze | Fait | `dq.dq_history` ; `livrables/S2_regles_great_expectations.md` §4 | Mesures du lot `L-2026-10-14`, couches, règles, volumes et échecs historisés |
 | S3 | US-12 | Checks Soda, une source par couche | Fait | `soda/configuration.yml` ; `soda/checks/bronze_checks.yml` ; `soda/checks/silver_checks.yml` ; `soda/checks/gold_checks.yml` ; `reports/us12_soda_silver.json` ; `reports/us12_soda_gold.json` | Checks Silver 8/8 et Gold 7/7 PASS ; RQ-018 de comparaison CD-001 reste non conforme, mesurée dans `dq.dq_history` |
 | S3 | US-16 | Clés étrangères | Fait | `pipelines/run_s3_integrity.py` ; `reports/us16_integrite.csv` | 1 000 souscripteurs et 200 types de contrat absents ; aucun sinistre sans contrat |
-| S3 | US-17 | Valeur sentinelle | Fait | `reports/us17_sentinelle.csv` ; `livrables/JOURNAL_DECISIONS.md` §10 | 40 000 sentinelles isolées ; 300 vrais orphelins après exclusion de `0` |
-| S3 | US-18 | Statuts de personne | Fait | `reports/us18_statuts.csv` ; `livrables/JOURNAL_DECISIONS.md` §11 | 479 prospects avec contrat ; 955 souscripteurs sans contrat |
+| S3 | US-17 | Valeur sentinelle | Fait | `reports/us17_sentinelle.csv` ; `livrables/JOURNAL_DECISIONS.md` décision 2 | 40 000 sentinelles isolées ; 300 vrais orphelins après exclusion de `0` |
+| S3 | US-18 | Statuts de personne | Fait | `reports/us18_statuts.csv` ; `livrables/JOURNAL_DECISIONS.md` décision 3 | 479 prospects avec contrat ; 955 souscripteurs sans contrat |
 | S3 | US-19 | Période de garantie | Fait | `reports/us19_garantie.csv` ; `pipelines/run_s3_integrity.py` | 1 200 sinistres hors période sur 100 000 |
 | S3 | US-14 | Définition unique du client actif | Fait | `pipelines/us14_client_actif.sql` ; `reports/us14_client_actif.csv` ; check RQ-018 | 37 643 clients par direction ; écart nul avec la définition commune CD-001 |
 | S4 | US-21 | Silver : standardiser | Fait | `pipelines/build_silver.py` ; `reports/us21_standardisation.csv` | 1 478 codes postaux réparés ; transformations relançables |

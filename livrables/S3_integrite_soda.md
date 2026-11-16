@@ -85,4 +85,4 @@ Contrôle RQ-018 : écart maximal entre directions = **0** ; mesure CD-001 = **3
 
 - Écart constaté avant US-14 : la définition commerciale seule dépassait CD-001 de 11 878 clients (mesure US-09). La requête commune supprime cet écart de définition, sans modifier les données CRM.
 - Aucune réinitialisation de base ; les contrôles sont relançables sur le lot Bronze.
-- À poursuivre : exécuter les checks sur Silver et Gold une fois ces couches construites et faire approuver les propositions par le Data Owner.
+- Les checks ont été exécutés après construction : Silver 8/8 et Gold 7/7. Les propositions de traitement et la définition commune restent à faire approuver par le Data Owner.
