@@ -33,7 +33,7 @@ UNION ALL SELECT 'cif.pays', COUNT(*) FROM cif.pays;
 Méthode d'ingestion en trois lignes (lecture, conversion, métadonnées, relance du lot) :
 1. Le script lit en flux les sept tables sources dans l'ordre de leur clé primaire, par lots de 2 000 lignes;
 2. Il convertit les valeurs en texte pour bronze, conserve les valeurs NULL et calcule un hash SHA-256 tronqué à 16 caractères hexadécimaux pour chaque ligne;
-3. Il renseigne `_batch_id`, `_source_system`, `_ingested_at` (défaut MariaDB) et `_row_hash`, et enregistre le lot dans `dq.lot_ingestion`. Une relance avec le même lot de bach`batch_id` ne crée aucun doublons de ce lot.
+3. Il renseigne `_batch_id`, `_source_system`, `_ingested_at` (défaut MariaDB) et `_row_hash`, et enregistre le lot dans `dq.lot_ingestion`. Une relance avec le même `batch_id` remplace le lot au lieu de créer des doublons.
 
 Exécution US-02 : lot `L-2026-10-14` terminé ; 385 262 lignes copiées dans les sept tables bronze. Pour chaque table, les lignes du lot ont leur système source attendu et un `_row_hash` non nul.
 
@@ -56,7 +56,7 @@ Preuve : `pipelines/check_bronze.py --batch-id L-2026-10-14`. Les 14 mesures RQ-
 | Épreuve | Résultat obtenu | Preuve |
 |---|---|---|
 | Relance du même lot : doublons créés | Non il n'y a pas de doublons, les volumes restent à 385 262 lignes au total et chaque volume par table est inchangé | `pipelines/load_bronze.py --batch-id L-2026-10-14`, puis comptage des lignes bronze du lot. |
-| Écart introduit volontairement sur une copie : la porte échoue-t-elle ? | oui la porté échoue quand on introduit volontairement sur la copie | `pipelines/check_bronze.py --batch-id L-2026-10-14 --inject-mismatch` |
+| Écart introduit volontairement sur une copie : la porte échoue-t-elle ? | Oui. Le test détecte l'écart de hash et les métadonnées incohérentes, sans modifier Bronze ni `dq.dq_history`. | `docker exec dq_jupyter python pipelines/check_bronze.py --batch-id L-2026-10-14 --inject-mismatch` |
 | Un problème de conversion rencontré (décimales, NULL, accents) et sa correction | Les valeurs typées source sont converties en texte ; aucun écart de hash n’est observé sur les sept tables. Les NULL restent NULL. | `pipelines/load_bronze.py` et mesures RQ-021 dans `dq.dq_history`. |
 
 ## 3. Profil de crm.client (US-06, US-07)
@@ -130,11 +130,11 @@ Conséquence pour la gouvernance : Commerciale compte 11 878 clients de plus que
 
 ## 6. Critères de fin (cochez, avec la preuve si elle n'est pas dans une section ci-dessus)
 
-- [ ] Les sept tables bronze existent et chaque ligne porte ses quatre métadonnées.
-- [ ] La porte B ne montre aucun écart de comptage ni de somme de contrôle.
-- [ ] Relancer l'ingestion du même lot ne crée aucun doublon.
-- [ ] Un écart introduit volontairement fait échouer la porte.
-- [ ] RQ-021 est écrite dans `dq.dq_history` (couche BRONZE).
+- [x] Les sept tables Bronze existent et chaque ligne du lot porte ses quatre métadonnées.
+- [x] La porte B ne montre aucun écart de comptage ni de somme de contrôle.
+- [x] Relancer l'ingestion du même lot remplace ses lignes sans créer de doublon.
+- [x] Un écart simulé est détecté sans modifier les données ni l'historique.
+- [x] RQ-021 et RQ-022 sont écrites dans `dq.dq_history` (couche BRONZE) : 14 mesures chacune, zéro échec.
 
 ## 7. Difficultés, écarts avec l'attendu, reprise
 
