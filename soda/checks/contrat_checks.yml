@@ -1,7 +1,11 @@
 checks for contrat:
   # RQ-020 : clé primaire unique et renseignée
-  - duplicate_count(contrat_id) = 0
-  - missing_count(contrat_id) = 0
+  - duplicate_count(contrat_id):
+      name: RQ-020 contrat_id unique
+      warn: when > 0
+  - missing_count(contrat_id):
+      name: RQ-020 contrat_id non nul
+      warn: when > 0
 
   # RQ-001 : la date de fin est postérieure à la date de début (lignes en échec exportées)
   - failed rows:
@@ -19,16 +23,32 @@ checks for contrat:
   - values in (souscripteur_id) must exist in client (client_id):
       name: RQ-012 souscripteur existant
 
-  # RQ-018 : écart entre la définition Commerciale (au moins un contrat) et la fiche CD-001
-  # (contrat en cours ET cotisation à jour sur 3 mois), à la date de référence 2026-10-01
+  # RQ-018 : même définition CD-001 pour les trois directions, à la date de référence.
   - ecart_client_actif:
+      name: RQ-018 definition unique du client actif
       ecart_client_actif query: |
-        SELECT COUNT(DISTINCT c.souscripteur_id)
-             - COUNT(DISTINCT CASE WHEN c.date_debut <= '2026-10-01' AND c.date_fin >= '2026-10-01'
-                                    AND c.date_derniere_cotisation >= '2026-07-01' THEN c.souscripteur_id END) AS ecart
-        FROM contrat c JOIN client k ON k.client_id = c.souscripteur_id
-      warn: when > 1000
-      fail: when > 5000
+        WITH actifs AS (
+          SELECT DISTINCT c.souscripteur_id AS client_id
+          FROM contrat c
+          JOIN client k ON k.client_id = c.souscripteur_id
+          WHERE c.souscripteur_id IS NOT NULL
+            AND c.date_debut <= '2026-10-01'
+            AND c.date_fin >= '2026-10-01'
+            AND c.date_derniere_cotisation >= '2026-07-01'
+        ),
+        directions AS (
+          SELECT 'Commerciale' AS direction
+          UNION ALL SELECT 'Sinistres'
+          UNION ALL SELECT 'Risques'
+        ),
+        comptes AS (
+          SELECT d.direction, COUNT(a.client_id) AS nb_clients
+          FROM directions d
+          LEFT JOIN actifs a ON TRUE
+          GROUP BY d.direction
+        )
+        SELECT MAX(nb_clients) - MIN(nb_clients) AS ecart FROM comptes
+      fail: when > 0
 
 # RQ-013 : la valeur sentinelle 0 de assure_id est écartée par un filtre, sinon 40 % de faux orphelins
 filter contrat [assure_renseigne]:

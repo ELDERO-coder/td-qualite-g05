@@ -1,0 +1,128 @@
+checks for crm_client:
+  - duplicate_count(client_id):
+      name: RQ-020 Bronze client_id unique
+      warn: when > 0
+  - missing_count(client_id):
+      name: RQ-020 Bronze client_id non nul
+      warn: when > 0
+  - invalid_count(type_personne) = 0:
+      name: RQ-009 Bronze type de personne autorise
+      valid values: ['prospect', 'souscripteur', 'assure']
+  - failed rows:
+      name: RQ-003 Bronze telephone souscripteur renseigne
+      fail condition: type_personne = 'souscripteur' AND (telephone IS NULL OR TRIM(telephone) = '')
+  - failed rows:
+      name: RQ-005 Bronze code postal francais valide
+      fail condition: pays = 'FR' AND (cp IS NULL OR cp NOT REGEXP '^[0-9]{5}$')
+  - failed rows:
+      name: RQ-007 Bronze pays dans le referentiel
+      fail query: |
+        SELECT client_id
+        FROM crm_client
+        WHERE _batch_id = 'L-2026-10-14'
+          AND (pays IS NULL OR pays NOT IN (SELECT code_pays FROM silver.ref_pays))
+  - failed rows:
+      name: RQ-015 Bronze prospect sans contrat
+      fail query: |
+        SELECT c.client_id
+        FROM crm_client c
+        WHERE c._batch_id = 'L-2026-10-14'
+          AND c.type_personne = 'prospect'
+          AND EXISTS (
+              SELECT 1 FROM crm_contrat k
+              WHERE k._batch_id = c._batch_id
+                AND k.souscripteur_id = c.client_id
+          )
+
+checks for crm_contrat:
+  - duplicate_count(contrat_id):
+      name: RQ-020 Bronze contrat_id unique
+      warn: when > 0
+  - missing_count(contrat_id):
+      name: RQ-020 Bronze contrat_id non nul
+      warn: when > 0
+  - failed rows:
+      name: RQ-001 Bronze date fin posterieure au debut
+      fail condition: date_fin <= date_debut
+  - invalid_count(duree_garantie_mois) = 0:
+      name: RQ-010 Bronze duree de garantie autorisee
+      valid values: ['12', '24', '36', '60']
+  - values in (code_type) must exist in crm_type_contrat (code_type):
+      name: RQ-011 Bronze type de contrat connu
+  - values in (souscripteur_id) must exist in crm_client (client_id):
+      name: RQ-012 Bronze souscripteur existant
+  - ecart_client_actif:
+      name: RQ-018 Bronze definition unique client actif
+      ecart_client_actif query: |
+        WITH actifs AS (
+          SELECT DISTINCT c.souscripteur_id AS client_id
+          FROM crm_contrat c
+          JOIN crm_client k
+            ON k.client_id = c.souscripteur_id AND k._batch_id = c._batch_id
+          WHERE c._batch_id = 'L-2026-10-14'
+            AND c.souscripteur_id IS NOT NULL
+            AND STR_TO_DATE(c.date_debut, '%Y-%m-%d') <= '2026-10-01'
+            AND STR_TO_DATE(c.date_fin, '%Y-%m-%d') >= '2026-10-01'
+            AND STR_TO_DATE(c.date_derniere_cotisation, '%Y-%m-%d') >= '2026-07-01'
+        ),
+        directions AS (
+          SELECT 'Commerciale' AS direction
+          UNION ALL SELECT 'Sinistres'
+          UNION ALL SELECT 'Risques'
+        ),
+        comptes AS (
+          SELECT d.direction, COUNT(a.client_id) AS nb_clients
+          FROM directions d
+          LEFT JOIN actifs a ON TRUE
+          GROUP BY d.direction
+        )
+        SELECT MAX(nb_clients) - MIN(nb_clients) AS ecart FROM comptes
+      fail: when > 0
+
+filter crm_contrat [assure_renseigne]:
+  where: assure_id <> '0'
+
+checks for crm_contrat [assure_renseigne]:
+  - values in (assure_id) must exist in crm_client (client_id):
+      name: RQ-013 Bronze assure existant, sentinelle exclue
+
+checks for crm_sinistre:
+  - duplicate_count(sinistre_id):
+      name: RQ-020 Bronze sinistre_id unique
+      warn: when > 0
+  - missing_count(sinistre_id):
+      name: RQ-020 Bronze sinistre_id non nul
+      warn: when > 0
+  - invalid_count(cp_sinistre) = 0:
+      name: RQ-014 Bronze code postal de sinistre valide
+      valid regex: '^[0-9]{5}$'
+  - missing_count(adresse_sinistre) = 0:
+      name: RQ-014 Bronze adresse de sinistre renseignee
+  - failed rows:
+      name: RQ-017 Bronze sinistre dans periode de garantie
+      fail query: |
+        SELECT s.sinistre_id
+        FROM crm_sinistre s
+        LEFT JOIN crm_contrat c
+          ON c.contrat_id = s.contrat_id AND c._batch_id = s._batch_id
+        WHERE s._batch_id = 'L-2026-10-14'
+          AND (c.contrat_id IS NULL
+               OR STR_TO_DATE(s.date_survenance, '%Y-%m-%d') IS NULL
+               OR STR_TO_DATE(c.date_debut, '%Y-%m-%d') IS NULL
+               OR STR_TO_DATE(c.date_fin, '%Y-%m-%d') IS NULL
+               OR STR_TO_DATE(s.date_survenance, '%Y-%m-%d')
+                    < STR_TO_DATE(c.date_debut, '%Y-%m-%d')
+               OR STR_TO_DATE(s.date_survenance, '%Y-%m-%d')
+                    > STR_TO_DATE(c.date_fin, '%Y-%m-%d'))
+  - taux_erreur_adresse:
+      name: RQ-014 Bronze rapprochement BAN
+      taux_erreur_adresse query: |
+        SELECT 100.0 * SUM(b.id_ban IS NULL) / COUNT(*) AS taux_erreur
+        FROM crm_sinistre s
+        LEFT JOIN silver.ref_ban b
+          ON CONCAT(b.numero, ' ', b.voie) = s.adresse_sinistre
+         AND b.code_postal = s.cp_sinistre
+         AND b.commune = s.ville_sinistre
+        WHERE s._batch_id = 'L-2026-10-14'
+      warn: when > 3
+      fail: when > 10

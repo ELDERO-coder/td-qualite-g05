@@ -1,0 +1,44 @@
+checks for client_unique:
+  - duplicate_count(cli_id) = 0:
+      name: RQ-019 Gold CLI unique
+  - missing_count(nom_reference) = 0:
+      name: RQ-023 Gold identité renseignée
+
+checks for contrat_certifie:
+  - failed rows:
+      name: RQ-011 Gold type contrat connu
+      fail query: |
+        SELECT k.contrat_id
+        FROM contrat_certifie k
+        WHERE k._batch_id = 'L-2026-10-14'
+          AND NOT EXISTS (
+            SELECT 1 FROM crm.type_contrat t WHERE t.code_type = k.code_type
+          )
+  - failed rows:
+      name: RQ-012 Gold souscripteur reference
+      fail query: |
+        SELECT k.contrat_id
+        FROM contrat_certifie k
+        LEFT JOIN client_unique c ON c.cli_id = k.souscripteur_cli_id
+        WHERE k._batch_id = 'L-2026-10-14' AND c.cli_id IS NULL
+
+checks for sinistre_certifie:
+  - failed rows:
+      name: RQ-017 Gold sinistre sous garantie
+      fail query: |
+        SELECT s.sinistre_id
+        FROM sinistre_certifie s
+        JOIN contrat_certifie k ON k.contrat_id = s.contrat_id
+        WHERE s._batch_id = 'L-2026-10-14'
+          AND (s.date_survenance < k.date_debut OR s.date_survenance > k.date_fin)
+  - failed rows:
+      name: RQ-023 Gold sinistre contrat reference
+      fail query: |
+        SELECT s.sinistre_id
+        FROM sinistre_certifie s
+        LEFT JOIN contrat_certifie k ON k.contrat_id = s.contrat_id
+        WHERE s._batch_id = 'L-2026-10-14' AND k.contrat_id IS NULL
+
+checks for v_client_actif:
+  - duplicate_count(cli_id) = 0:
+      name: RQ-018 Gold vue client actif unique

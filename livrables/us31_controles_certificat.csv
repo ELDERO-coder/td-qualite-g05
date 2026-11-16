@@ -1,0 +1,22 @@
+﻿rule_id,couche,table_cible,nb_testees,nb_echecs,conforme
+RQ-021,BRONZE,historique des 7 tables Bronze,7,0,True
+RQ-022,BRONZE,historique des 7 tables Bronze,7,0,True
+RQ-001,SILVER,silver.contrat,98600,0,True
+RQ-007,SILVER,silver.client,138470,0,True
+RQ-009,SILVER,silver.client,98470,0,True
+RQ-010,SILVER,silver.contrat,98600,0,True
+RQ-014,SILVER,silver.sinistre,88049,0,True
+RQ-001,GOLD,gold.contrat_certifie,93427,0,True
+RQ-010,GOLD,gold.contrat_certifie,93427,0,True
+RQ-014,GOLD,gold.sinistre_certifie,82790,0,True
+RQ-020,SILVER,silver.keys,325119,0,True
+RQ-024,SILVER,s5.certification.RQ-024,340000,0,True
+RQ-023,GOLD,s5.certification.RQ-023,754223,0,True
+RQ-002,GOLD,gold.contrat_certifie,93311,0,True
+RQ-011,GOLD,gold.contrat_certifie,93427,0,True
+RQ-012,GOLD,gold.contrat_certifie,93427,0,True
+RQ-013,GOLD,gold.contrat_certifie,55533,0,True
+RQ-015,GOLD,gold.contrat_certifie,93427,0,True
+RQ-017,GOLD,gold.sinistre_certifie,82790,0,True
+RQ-018,GOLD,gold.v_client_actif,3,3,False
+RQ-019,GOLD,gold.client_unique,114417,0,True

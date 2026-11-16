@@ -1,0 +1,7 @@
+checks for us08_client_copy:
+  - duplicate_count(client_id):
+      name: US-08 duplicate RQ-020 test
+      warn: when > 0
+  - missing_count(client_id):
+      name: US-08 missing RQ-020 test
+      warn: when > 0

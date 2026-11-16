@@ -1,0 +1,31 @@
+﻿couche,dimension,nb_testees,nb_echecs,taux_conformite
+BRONZE,Cohérence,100000.0,800.0,99.2
+BRONZE,Cohérence de définition,3.0,0.0,100.0
+BRONZE,Cohérence de statut,70856.0,1434.0,97.976
+BRONZE,Cohérence inter-tables,100000.0,1200.0,98.8
+BRONZE,Complétude,49898.0,5989.0,87.998
+BRONZE,"Complétude, intégrité",14.0,0.0,100.0
+BRONZE,Traçabilité,385262.0,0.0,100.0
+BRONZE,Unicité,300000.0,0.0,100.0
+BRONZE,Validité domaine,200000.0,800.0,99.6
+BRONZE,Validité format,95437.0,1456.0,98.474
+BRONZE,Validité métier,91802.0,300.0,99.673
+GOLD,Cohérence,93427.0,0.0,100.0
+GOLD,Cohérence de définition,3.0,3.0,0.0
+GOLD,Cohérence de statut,93427.0,0.0,100.0
+GOLD,Cohérence inter-tables,82790.0,0.0,100.0
+GOLD,Intégrité référentielle,242387.0,0.0,100.0
+GOLD,"Précision, cohérence",82790.0,0.0,100.0
+GOLD,Traçabilité,429104.0,0.0,100.0
+GOLD,Unicité,114417.0,0.0,100.0
+GOLD,Validité domaine,93427.0,0.0,100.0
+GOLD,Validité métier,93311.0,0.0,100.0
+SILVER,Cohérence,98600.0,0.0,100.0
+SILVER,Complétude,289275.0,5902.0,97.96
+SILVER,Exactitude,136360.0,694.0,99.491
+SILVER,Intégrité référentielle,138470.0,0.0,100.0
+SILVER,"Précision, cohérence",88049.0,0.0,100.0
+SILVER,Traçabilité,325119.0,0.0,100.0
+SILVER,Unicité,325119.0,0.0,100.0
+SILVER,Validité domaine,197070.0,0.0,100.0
+SILVER,Validité format,357534.0,2057.0,99.425

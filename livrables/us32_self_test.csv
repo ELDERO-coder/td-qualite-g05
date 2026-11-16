@@ -1,0 +1,6 @@
+﻿scenario,message,reussi
+sans certificat,Publication refusée : aucun certificat pour ce lot,True
+certificat NO_GO,Publication refusée : certificat TEST-NO-GO = NO_GO,True
+Gold modifié,Publication refusée : Gold a changé depuis l'émission du certificat,True
+certificat GO et Gold intact,Publication transactionnelle et RQ-025 conformes,True
+certification du lot volontairement dégradé,NO_GO; RQ-001 détectée=True,True

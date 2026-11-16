@@ -1,0 +1,39 @@
+﻿couche,rule_id,libelle,dimension,porte,severite,nb_testees,nb_echecs,taux_conformite,mesure_le
+BRONZE,RQ-001,La date de fin d'un contrat est postérieure à sa date de début,Cohérence,S,BLOQUANTE,100000.0,800.0,99.2,2026-10-21 14:27:56
+SILVER,RQ-001,La date de fin d'un contrat est postérieure à sa date de début,Cohérence,S,BLOQUANTE,98600.0,0.0,100.0,2026-10-21 16:30:47
+GOLD,RQ-001,La date de fin d'un contrat est postérieure à sa date de début,Cohérence,S,BLOQUANTE,93427.0,0.0,100.0,2026-10-21 16:30:48
+BRONZE,RQ-002,Un souscripteur personne physique a 18 ans ou plus à la date de début du contrat (un assuré peut être mineur),Validité métier,G,BLOQUANTE,91802.0,300.0,99.673,2026-10-21 14:27:56
+GOLD,RQ-002,Un souscripteur personne physique a 18 ans ou plus à la date de début du contrat (un assuré peut être mineur),Validité métier,G,BLOQUANTE,93311.0,0.0,100.0,2026-10-21 16:30:59
+BRONZE,RQ-003,"Le téléphone d'un souscripteur est renseigné (ni nul, ni vide, ni blanc)",Complétude,S,AVERTISSEMENT,49898.0,5989.0,87.998,2026-10-21 14:27:56
+SILVER,RQ-003,"Le téléphone d'un souscripteur est renseigné (ni nul, ni vide, ni blanc)",Complétude,S,AVERTISSEMENT,49275.0,5902.0,88.022,2026-10-21 16:30:47
+SILVER,RQ-004,"Pour une adresse en France, le téléphone respecte le format à 10 chiffres une fois normalisé (+33 et 0033 convertis en 0)",Validité format,S,AVERTISSEMENT,120633.0,866.0,99.282,2026-10-21 16:30:47
+BRONZE,RQ-005,"Pour une adresse en France, le code postal compte exactement 5 chiffres",Validité format,S,AVERTISSEMENT,95437.0,1456.0,98.474,2026-10-21 14:27:56
+SILVER,RQ-005,"Pour une adresse en France, le code postal compte exactement 5 chiffres",Validité format,S,AVERTISSEMENT,136360.0,0.0,100.0,2026-10-21 16:30:47
+SILVER,RQ-006,"Pour une adresse en France, le couple code postal / commune existe dans le référentiel postal (après restauration du zéro initial)",Exactitude,S,AVERTISSEMENT,136360.0,694.0,99.491,2026-10-21 16:30:47
+SILVER,RQ-007,Le pays (code ISO à deux lettres) appartient à la liste de référence,Intégrité référentielle,S,BLOQUANTE,138470.0,0.0,100.0,2026-10-21 16:30:47
+SILVER,RQ-008,L'adresse e-mail respecte un motif valide,Validité format,S,AVERTISSEMENT,100541.0,1191.0,98.815,2026-10-21 16:30:47
+BRONZE,RQ-009,"Le type de personne vaut prospect, souscripteur ou assure (minuscules, sans accent, comme dans la base)",Validité domaine,S,BLOQUANTE,100000.0,200.0,99.8,2026-10-21 14:27:56
+SILVER,RQ-009,"Le type de personne vaut prospect, souscripteur ou assure (minuscules, sans accent, comme dans la base)",Validité domaine,S,BLOQUANTE,98470.0,0.0,100.0,2026-10-21 16:30:47
+BRONZE,RQ-010,"La durée de garantie vaut 12, 24, 36 ou 60 mois",Validité domaine,S,BLOQUANTE,100000.0,600.0,99.4,2026-10-21 14:27:56
+SILVER,RQ-010,"La durée de garantie vaut 12, 24, 36 ou 60 mois",Validité domaine,S,BLOQUANTE,98600.0,0.0,100.0,2026-10-21 16:30:47
+GOLD,RQ-010,"La durée de garantie vaut 12, 24, 36 ou 60 mois",Validité domaine,S,BLOQUANTE,93427.0,0.0,100.0,2026-10-21 16:30:48
+GOLD,RQ-011,Le type de contrat existe dans type_contrat,Intégrité référentielle,G,BLOQUANTE,93427.0,0.0,100.0,2026-10-21 16:30:59
+GOLD,RQ-012,Le souscripteur d'un contrat existe dans le client,Intégrité référentielle,G,BLOQUANTE,93427.0,0.0,100.0,2026-10-21 16:31:00
+GOLD,RQ-013,L'assuré d'un contrat existe dans le client ; la valeur sentinelle 0 est remplacée par NULL avant contrôle,Intégrité référentielle,G,BLOQUANTE,55533.0,0.0,100.0,2026-10-21 16:31:01
+SILVER,RQ-014,"Adresse de sinistre : format valide, rapprochée du référentiel national (BAN), enregistrement bloqué si échec","Précision, cohérence",S,BLOQUANTE,88049.0,0.0,100.0,2026-10-21 16:30:48
+GOLD,RQ-014,"Adresse de sinistre : format valide, rapprochée du référentiel national (BAN), enregistrement bloqué si échec","Précision, cohérence",S,BLOQUANTE,82790.0,0.0,100.0,2026-10-21 16:30:49
+BRONZE,RQ-015,Un prospect n'a aucun contrat,Cohérence de statut,G,BLOQUANTE,20958.0,479.0,97.714,2026-10-21 14:32:45
+GOLD,RQ-015,Un prospect n'a aucun contrat,Cohérence de statut,G,BLOQUANTE,93427.0,0.0,100.0,2026-10-21 16:31:02
+BRONZE,RQ-016,Un souscripteur a au moins un contrat,Cohérence de statut,G,AVERTISSEMENT,49898.0,955.0,98.086,2026-10-21 14:32:45
+BRONZE,RQ-017,La date de survenance d'un sinistre est comprise dans la période de garantie du contrat,Cohérence inter-tables,G,BLOQUANTE,100000.0,1200.0,98.8,2026-10-21 14:32:45
+GOLD,RQ-017,La date de survenance d'un sinistre est comprise dans la période de garantie du contrat,Cohérence inter-tables,G,BLOQUANTE,82790.0,0.0,100.0,2026-10-21 16:31:02
+BRONZE,RQ-018,"Client actif : contrat en cours ET cotisation à jour sur 3 mois (fiche CD-001), à la date de référence du lot, calculé de façon identique pour les trois directions",Cohérence de définition,G,BLOQUANTE,3.0,0.0,100.0,2026-10-21 14:32:45
+GOLD,RQ-018,"Client actif : contrat en cours ET cotisation à jour sur 3 mois (fiche CD-001), à la date de référence du lot, calculé de façon identique pour les trois directions",Cohérence de définition,G,BLOQUANTE,3.0,3.0,0.0,2026-10-21 16:31:02
+GOLD,RQ-019,Une personne n'a qu'un seul identifiant client unique (CLI),Unicité,G,BLOQUANTE,114417.0,0.0,100.0,2026-10-21 16:31:04
+BRONZE,RQ-020,Les clés primaires sont uniques et jamais nulles,Unicité,S,BLOQUANTE,300000.0,0.0,100.0,2026-10-21 14:27:56
+SILVER,RQ-020,Les clés primaires sont uniques et jamais nulles,Unicité,S,BLOQUANTE,325119.0,0.0,100.0,2026-10-21 16:30:51
+BRONZE,RQ-021,Réconciliation source vers bronze : mêmes comptages et mêmes sommes de contrôle par table,"Complétude, intégrité",B,BLOQUANTE,14.0,0.0,100.0,2026-10-14 15:21:38
+BRONZE,RQ-022,"Chaque ligne bronze porte lot, source, horodatage et empreinte de ligne",Traçabilité,B,BLOQUANTE,385262.0,0.0,100.0,2026-10-14 15:21:38
+SILVER,RQ-023,Chaque ligne silver et gold référence sa ligne bronze d'origine,Traçabilité,S,BLOQUANTE,325119.0,0.0,100.0,2026-10-21 15:59:41
+GOLD,RQ-023,Chaque ligne silver et gold référence sa ligne bronze d'origine,Traçabilité,S,BLOQUANTE,429104.0,0.0,100.0,2026-10-21 16:16:12
+SILVER,RQ-024,Conservation : lignes silver + lignes rejetées = lignes bronze,Complétude,S,BLOQUANTE,240000.0,0.0,100.0,2026-10-21 15:59:41
