@@ -36,12 +36,12 @@ Trois données retracées (détail : `livrables/S4_silver_gold.md`, section 5) :
 
 | Écart | Chiffre | Règle | Conséquence pour le CRM | Qui doit agir |
 |---|---|---|---|---|
-| Anomalies résiduelles dans Gold | 2 948 actifs manquants par rapport à CD-001 | RQ-018 | Indicateur non conforme ; ne pas publier | Data Owner + Data Steward |
+| Rapprochement CD-001 / Gold | Écart net de 2 948 : 562 identifiants sans Gold, 972 sans Gold actif, et 1 414 identifiants source regroupés par consolidation | RQ-018 | Écart expliqué, mais grain source vs Golden Record à faire valider ; ne pas publier | Data Owner + Data Steward |
 | Lignes mises en quarantaine, par règle | S : RQ-007 1 450 ; RQ-009 80 ; RQ-001 800 ; RQ-010 600 ; RQ-014 11 951. G : RQ-002 1 594 ; RQ-011 199 ; RQ-012 2 487 ; RQ-013 1 257 ; RQ-015 1 009 ; RQ-017 5 259 | Règles indiquées | Données exclues du Gold ; traiter les causes métier à la source | Data Owners source |
 | Avertissements restants | Silver : RQ-003 5 902 ; RQ-004 866 ; RQ-006 694 ; RQ-008 1 191 | RQ-003/004/006/008 ; Bronze RQ-016 955 | Garder visibles, arbitrer les seuils avant usage | Data Owner |
 | Règles non mesurées ou non couvertes par le certificat | RQ-025 pas de chargement réel ; aucun nom/signature Data Owner | RQ-025 | Réconciliation exécutée uniquement en simulation transactionnelle | Data Owner + équipe migration |
 
-Hypothèses à faire valider : seuils de rapprochement 70/69 ; survie par attribut et préférence CRM en cas d'égalité ; interprétation de CD-001 après consolidation ; sévérité des quarantaines métier. Voir `JOURNAL_DECISIONS.md`. Un test de dégradation volontaire (RQ-001) produit NO_GO ; le lot réel n'obtient pas de GO tant que RQ-018 échoue.
+Hypothèses à faire valider : seuils de rapprochement 70/69 ; survie par attribut et préférence CRM en cas d'égalité ; grain attendu par CD-001 après consolidation ; sévérité des quarantaines métier. Le détail du rapprochement RQ-018 est dans `RQ018_rapprochement.md`. Un test de dégradation volontaire (RQ-001) produit NO_GO ; le lot réel reste NO-GO tant que le Data Owner n'a pas arbitré l'écart et que la certification n'est pas conforme.
 
 ## 4. La décision
 

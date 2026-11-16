@@ -116,13 +116,17 @@ YData-Profiling a analysé les 40 000 lignes et les 10 colonnes. Les colonnes so
 Preuve reproductible : `docker exec dq_jupyter python pipelines/profile_cif_us04.py`,  Rapport YData-Profiling : `reports/us04_cif_profiling.html` ; métriques détaillées : `reports/us04_cif_metrics.csv`.
 ## 5. Trois définitions du « client actif » (US-09)
 
-| Direction | Définition utilisée | Nombre de clients | Écart avec la définition de la fiche CD-001 |
-|---|---|---|---|
-| Commerciale | … | … | … |
-| Sinistres | … | … | … |
-| Risques | … | … | … |
+Mesure sur le lot bronze `L-2026-10-14`, à la date de référence du 01/10/2026. La fiche CD-001 retient un contrat en cours et une cotisation depuis le 01/07/2026. Les règles Sinistres et Risques ci-dessous sont les définitions opérationnelles comparées pour cet exercice.
 
-Conséquence pour la gouvernance, en trois phrases : [À COMPLÉTER]
+| Direction | Définition calculée sur bronze | Nombre de clients | Écart avec CD-001 (37 643 clients) |
+|---|---|---|---|
+| Commerciale | Client connu ayant au moins un contrat comme souscripteur | 49 521 | +11 878 ; 11 878 clients propres à Commerciale, 0 propre à CD-001 |
+| Sinistres | Client connu avec un contrat en cours et au moins un sinistre lié à ce contrat | 32 421 | −5 222 nets ; 4 250 clients propres à Sinistres, 9 472 propres à CD-001 |
+| Risques | Client connu avec un contrat en cours, quelle que soit la date de cotisation | 43 566 | +5 923 ; 5 923 clients propres à Risques, 0 propre à CD-001 |
+
+Requête reproductible : `pipelines/us09_client_actif.sql` (comptes, recouvrements et écarts calculés sur les identifiants clients distincts). Le diagnostic du passage des identifiants source aux entités Gold et des causes de l'écart RQ-018 est documenté dans `livrables/RQ018_rapprochement.md` et reproductible avec `pipelines/analyser_rq018.sql`.
+
+Conséquence pour la gouvernance : Commerciale compte 11 878 clients de plus que CD-001, car sa définition ne vérifie ni la période du contrat ni la cotisation. Risques en compte 5 923 de plus en ignorant la cotisation, tandis que Sinistres exclut 9 472 clients CD-001 sans sinistre lié à un contrat en cours. Le Data Owner doit valider une définition commune fondée sur CD-001 avant sa mise en œuvre en US-14.
 
 ## 6. Critères de fin (cochez, avec la preuve si elle n'est pas dans une section ci-dessus)
 
