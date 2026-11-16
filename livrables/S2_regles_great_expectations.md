@@ -1,6 +1,6 @@
 # S2 · Great Expectations : des règles en tests automatisés
 
-Groupe : 05  ·  Date : 21/10/2026  ·  Rédacteur : [À COMPLÉTER]  ·  Étiquette : `seance-2`
+Groupe : 05  ·  Date : 21/10/2026  ·  Rédacteur : Dewanou ELOHOUNKPON  ·  Étiquette : `seance-2`
 
 Mesure exécutée sur le lot Bronze `L-2026-10-14`. La requête SQL produit le prédicat de chaque règle ; Great Expectations vérifie ensuite que `conforme` vaut `True`. Chaque expectation porte `meta.rule_id`. Preuve : `pipelines/run_s2_quality.py`.
 
@@ -67,7 +67,7 @@ Mesures du lot `L-2026-10-14` inscrites dans `dq.dq_history` avec couche, règle
 ## 5. Critères de fin
 
 - [x] Chaque expectation porte l'identifiant de sa règle dans ses métadonnées.
-- [ ] Relance sur une autre base possible par `--url`, mais les tables et règles restent définies dans le script.
+- [x] L'URL de connexion est paramétrable par `--url`. La base cible doit fournir les mêmes schémas et tables ; les règles restent définies dans le script. La connexion à une instance distincte n'a pas été testée dans ce TP.
 - [x] Les mesures sont enregistrées dans `dq.dq_history` avec lot et couche.
 - [x] Une commande exécute les règles, les exports d'échecs et la mesure d'âge.
 
