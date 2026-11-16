@@ -83,7 +83,7 @@ Lineage : CRM.client → Bronze.crm_client → Silver.client → Gold.xref_ident
 
 ## 4. Décisions de la séance
 
-Décision 16 ajoutée dans `JOURNAL_DECISIONS.md` : un certificat GO exige 100 % des contrôles bloquants applicables ; l'exécution automatique ne vaut pas signature du Data Owner. Nombre de décisions ajoutées en S5 : 1.
+Décision 8 ajoutée dans `JOURNAL_DECISIONS.md` : un certificat GO exige 100 % des contrôles bloquants applicables ; l'exécution automatique ne vaut pas signature du Data Owner. Nombre de décisions ajoutées en S5 : 1.
 
 ## 5. Critères de fin
 
