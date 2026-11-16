@@ -100,7 +100,7 @@ Les seuils et la survie sont consignés comme propositions Data Steward dans `JO
 
 Orphelins Gold (contrat sans client, sinistre sans contrat) : **0, 0**.
 
-La vue unique `gold.v_client_actif` publie **34 695**, contre **37 643** dans CD-001 sur Bronze : écart **−2 948 (−7,83 %)**. La consolidation ramène 37 643 identifiants CRM actifs à 35 666 CLI ; 971 de ces CLI actifs n'ont aucun contrat certifié. Au total, 2 818 lignes de contrats actifs Bronze ne sont pas certifiées. RQ-018 échoue en Gold : ne pas déclarer le lot conforme.
+La vue unique `gold.v_client_actif` publie **34 695** entités Gold actives, contre **37 643** identifiants source CD-001 : écart net **−2 948 (−7,83 %)**. Le diagnostic détaillé décompose l'écart en **562** identifiants sans mapping Gold, **972** identifiants mappés à une entité Gold non active, et **1 414** identifiants actifs source regroupés par consolidation (36 109 identifiants rattachés à 34 695 entités Gold actives). Les 972 identifiants concernés ont 1 187 contrats actifs Bronze : 127 sont rejetés en Silver (RQ-010) et 1 060 passent en Silver, mais aucun n'est certifié Gold. Les motifs de rejet G se cumulent sur certains contrats ; ne pas additionner leurs volumes pour compter des contrats distincts. RQ-018 échoue en Gold : ne pas déclarer le lot conforme.
 
 Effet de la quarantaine : aucun orphelin Gold. Les contrats dont le client manque (RQ-012) et les sinistres hors garantie ou liés à un contrat non certifié (RQ-017) sont rejetés.
 
