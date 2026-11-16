@@ -1,0 +1,30 @@
+checks for client:
+  # RQ-020 : identifiant unique et renseigne
+  - duplicate_count(silver_row_id) = 0:
+      name: RQ-020 identifiant silver unique
+
+  - missing_count(silver_row_id) = 0:
+      name: RQ-020 identifiant silver renseigne
+
+  # RQ-009 : type de personne autorise
+  - invalid_count(type_personne) = 0:
+      name: RQ-009 type de personne autorise
+      valid values: ['prospect', 'souscripteur', 'assure']
+
+  # RQ-003 : telephone du souscripteur renseigne
+  - failed rows:
+      name: RQ-003 telephone du souscripteur renseigne
+      fail condition: type_personne = 'souscripteur' AND (telephone_normalise IS NULL OR TRIM(telephone_normalise) = '')
+
+  # RQ-005 : code postal francais sur 5 chiffres
+  - failed rows:
+      name: RQ-005 code postal sur 5 chiffres (France)
+      fail condition: pays_iso = 'FR' AND (cp IS NULL OR cp NOT REGEXP '^[0-9]{5}$')
+
+  # RQ-007 : pays present dans le referentiel
+  - failed rows:
+      name: RQ-007 pays dans la liste de reference
+      fail query: |
+        SELECT source_id FROM client
+        WHERE pays_iso IS NULL
+           OR pays_iso NOT IN (SELECT code_pays FROM ref_pays)

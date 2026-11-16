@@ -1,0 +1,17 @@
+checks for contrat:
+  # RQ-020 : identifiant unique et renseigne
+  - duplicate_count(contrat_id) = 0:
+      name: RQ-020 identifiant de contrat unique
+
+  - missing_count(contrat_id) = 0:
+      name: RQ-020 identifiant de contrat renseigne
+
+  # RQ-001 : date de fin posterieure a la date de debut
+  - failed rows:
+      name: RQ-001 date de fin posterieure a la date de debut
+      fail condition: date_fin <= date_debut
+
+  # RQ-010 : duree de garantie autorisee
+  - invalid_count(duree_garantie_mois) = 0:
+      name: RQ-010 duree de garantie autorisee
+      valid values: [12, 24, 36, 60]

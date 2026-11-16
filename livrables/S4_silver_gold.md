@@ -6,47 +6,83 @@ Un constat = un chiffre mesuré (règle, couche) + la preuve qui le reproduit + 
 
 ## 1. Silver et quarantaine (US-21, US-22)
 
-Scripts ou notebooks (chemins) : [À COMPLÉTER]
+Scripts ou notebooks (chemins) : [pipelines/S4_silver_gold.py]
 
 Traitements appliqués (pays, code postal, identité, autres), avec le nombre de lignes touchées par chacun :
 
+Le pipeline transforme les données BRONZE vers SILVER à l'aide de PySpark, puis charge les résultats dans MariaDB.
+
 | Traitement | Table | Lignes modifiées | Garde-fou (ce que le traitement ne doit pas faire) |
 |---|---|---|---|
-| … | … | … | … |
-| … | … | … | … |
-| … | … | … | … |
+| Normalisation des identités | silver.client | 98 156 | Ne pas inventer d'identité manquante |
+| Normalisation des adresses et villes | silver.client, silver.sinistre | 99 350 | Ne pas inventer d'adresse ou de ville |
+| Normalisation des pays | silver.client | 2 598 | Ne pas attribuer arbitrairement un pays |
+| Normalisation des téléphones et courriels | silver.client | 25 111 | Ne pas inventer de coordonnées |
+| Contrôle des règles bloquantes | Clients CRM et contrats | 2 050 | Ne pas intégrer les lignes invalides en silver |
 
 Invariant silver + rejets = bronze :
 
 | Table | Lignes bronze | Lignes silver | Lignes rejetées | Écart |
 |---|---|---|---|---|
-| client (crm) | … | … | … | … |
-| client (cif) | … | … | … | … |
-| contrat | … | … | … | … |
-| sinistre | … | … | … | … |
+| client (crm) | 100 000 | 99 350 | 650 | 0 |
+| client (cif) | 40 000 | 40 000 | 0 | 0 |
+| contrat | 100 000 | 98 600 | 1 400 | 0 |
+| sinistre | 100 000 | 100 000 | 0 | 0 |
+
+
+Contrôle RQ-024 — Conservation des lignes
+
+Le contrôle RQ-024 a été exécuté sur le batch L-2026-10-01, en comparant les volumes BRONZE, SILVER et les rejets distincts enregistrés dans dq.rejets (porte S).
+
+Résultat : RQ-024 : OK.
+
+Les quatre entités présentent un écart nul. L'invariant BRONZE = SILVER + rejets est donc respecté pour chaque entité et chaque source.
+
+Aucune perte silencieuse de lignes n'a été constatée.
 
 Rejets par règle (`dq.rejets`) :
 
 | Règle | Table | Lignes rejetées | Raison métier |
 |---|---|---|---|
-| … | … | … | … |
-| … | … | … | … |
+| RQ-007 | client (crm) | 450 | Pays absent du référentiel après normalisation |
+| RQ-009 | client (crm) | 200 | Type de personnes hors domaine |
+| RQ-001 | contrat | 800 | Date de fin inférieure ou égale à la date de début |
+| RQ-010 | contrat | 600 | Durée de garantie hors des valeurs autorisées (12, 24, 36, 60 mois) |
 
-Idempotence : le traitement relancé deux fois donne le même résultat (preuve) : [À COMPLÉTER]
+Idempotence : le traitement relancé deux fois donne le même résultat (preuve) : 
+
+Le pipeline pipelines/S4_silver_gold.py a été exécuté deux fois successivement sur le même batch.
+
+Les deux exécutions ont produit le même bilan :
+Clients CRM : 99 350 lignes SILVER.
+Clients CIF : 40 000 lignes SILVER.
+Contrats : 98 600 lignes SILVER.
+Sinistres : 100 000 lignes SILVER.
+Rejets : 2 050 lignes.
 
 ## 2. Porte S : bronze contre silver (US-23)
 
 | Règle | Sévérité | Taux bronze | Taux silver | Écart | Explication de l'écart |
 |---|---|---|---|---|---|
-| … | … | … | … | … | … |
-| … | … | … | … | … | … |
-| … | … | … | … | … | … |
-| … | … | … | … | … | … |
-| … | … | … | … | … | … |
+| RQ-001 | BLOQUANTE | 99,2 % | 100 % | +0,800 pt | Les contrats avec une date de fin invalide ont été rejetés. |
+| RQ-003 | AVERTISSEMENT | 93,999 % | 88,006 % | -5,993 pts | Les populations contrôlées diffèrent entre BRONZE et SILVER. Les souscripteurs sans téléphone restent présents. |
+| RQ-005 | AVERTISSEMENT | 98,474 % | 100 % | +1,526 pt | Normalisation des données et conformité des codes postaux contrôlés. |
+| RQ-007 | BLOQUANTE | 96,95 % | 100 % | +3,05 pts | Normalisation des pays et rejet des valeurs absentes du référentiel. |
+| RQ-009 | BLOQUANTE | 99,8 % | 100 % | +0,2 pt | Les clients avec un type de personne invalide ont été rejetés. |
+| RQ-010 | BLOQUANTE | 99,4 % | 100 % | +0,6 pt | Les contrats avec une durée de garantie invalide ont été rejetés. |
 
-Toute règle dont le taux baisse de bronze à silver doit être expliquée : [À COMPLÉTER]
+Toute règle dont le taux baisse de bronze à silver doit être expliquée : 
 
-Règles bloquantes de la porte S toutes conformes sur silver ? Sinon, lesquelles et pourquoi : [À COMPLÉTER]
+Seule RQ-003 présente une baisse parmi les règles comparées, passant de 93,999 % à 88,006 %. Les populations contrôlées et les dénominateurs diffèrent entre BRONZE et SILVER. Les 5 960 souscripteurs CRM sans téléphone restent présents dans SILVER, car cette anomalie ne fait pas partie des motifs de rejet du pare-feu qualité. Cette baisse ne prouve donc pas une dégradation des données lors de la transformation.
+
+
+Règles bloquantes de la porte S toutes conformes sur silver ? Sinon, lesquelles et pourquoi : 
+
+Non. Les règles RQ-001, RQ-007, RQ-009, RQ-010, RQ-020, RQ-023 et RQ-024 sont conformes aux contrôles réalisés.
+
+En revanche, RQ-014 présente une non-conformité sur le rapprochement avec le référentiel BAN : 46 716 adresses sur 100 000 ne sont pas reconnues, soit un taux d'erreur de 46,716 %, supérieur au seuil d'échec de 10 %. Les contrôles de format et de complétude réussissent.
+
+La porte S ne peut donc pas être considérée comme entièrement validée.
 
 ## 3. Dédoublonnage et golden record (US-24, US-25)
 

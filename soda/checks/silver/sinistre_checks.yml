@@ -1,0 +1,16 @@
+checks for sinistre:
+  # RQ-020 : identifiant de sinistre unique et renseigne
+  - duplicate_count(sinistre_id) = 0:
+      name: RQ-020 identifiant de sinistre unique
+
+  - missing_count(sinistre_id) = 0:
+      name: RQ-020 identifiant de sinistre renseigne
+
+  # RQ-014 : code postal du sinistre sur 5 chiffres
+  - invalid_count(cp) = 0:
+      name: RQ-014 code postal de sinistre sur 5 chiffres
+      valid regex: '^[0-9]{5}$'
+
+  # RQ-014 : adresse du sinistre renseignee
+  - missing_count(adresse_normalisee) = 0:
+      name: RQ-014 adresse du sinistre renseignee

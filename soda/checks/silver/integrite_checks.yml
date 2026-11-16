@@ -1,0 +1,60 @@
+checks for contrat:
+  - failed rows:
+      name: RQ-011 type de contrat connu
+      fail query: |
+        SELECT contrat_id FROM contrat
+        WHERE code_type IS NULL
+           OR code_type NOT IN (SELECT code_type FROM type_contrat)
+
+  - failed rows:
+      name: RQ-012 souscripteur existant
+      fail query: |
+        SELECT contrat_id FROM contrat
+        WHERE souscripteur_id IS NULL
+           OR souscripteur_id NOT IN (
+               SELECT source_id FROM client
+               WHERE source_systeme = 'crm'
+           )
+
+  - failed rows:
+      name: RQ-013 assure existant
+      fail query: |
+        SELECT contrat_id FROM contrat
+        WHERE assure_id IS NOT NULL
+          AND assure_id NOT IN (
+              SELECT source_id FROM client
+              WHERE source_systeme = 'crm'
+          )
+
+checks for client:
+  - failed rows:
+      name: RQ-015 prospect sans contrat
+      fail query: |
+        SELECT source_id FROM client
+        WHERE source_systeme = 'crm'
+          AND type_personne = 'prospect'
+          AND source_id IN (
+              SELECT souscripteur_id FROM contrat
+          )
+
+  - failed rows:
+      name: RQ-016 souscripteur sans contrat
+      fail query: |
+        SELECT source_id FROM client
+        WHERE source_systeme = 'crm'
+          AND type_personne = 'souscripteur'
+          AND source_id NOT IN (
+              SELECT souscripteur_id FROM contrat
+              WHERE souscripteur_id IS NOT NULL
+          )
+
+checks for sinistre:
+  - failed rows:
+      name: RQ-017 sinistre hors periode de garantie
+      fail query: |
+        SELECT s.sinistre_id
+        FROM sinistre s
+        JOIN contrat c ON c.contrat_id = s.contrat_id
+        WHERE NOT (
+            s.date_survenance BETWEEN c.date_debut AND c.date_fin
+        )
