@@ -21,6 +21,9 @@ __pycache__/
 # Great Expectations : résultats locaux
 **/uncommitted/
 
+# Résultats locaux des contrôles S2 (reproductibles avec le script)
+reports/s2_failures*.json
+
 # Système
 .DS_Store
 Thumbs.db

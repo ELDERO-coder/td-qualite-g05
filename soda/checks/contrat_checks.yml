@@ -19,14 +19,28 @@ checks for contrat:
   - values in (souscripteur_id) must exist in client (client_id):
       name: RQ-012 souscripteur existant
 
-  # RQ-018 : écart entre la définition Commerciale (au moins un contrat) et la fiche CD-001
-  # (contrat en cours ET cotisation à jour sur 3 mois), à la date de référence 2026-10-01
+  # RQ-018 : la même définition CD-001 est appliquée aux trois directions.
+  # La date de référence est celle du lot S1; assure_id='0' est exclu.
   - ecart_client_actif:
       ecart_client_actif query: |
-        SELECT COUNT(DISTINCT c.souscripteur_id)
-             - COUNT(DISTINCT CASE WHEN c.date_debut <= '2026-10-01' AND c.date_fin >= '2026-10-01'
-                                    AND c.date_derniere_cotisation >= '2026-07-01' THEN c.souscripteur_id END) AS ecart
-        FROM contrat c JOIN client k ON k.client_id = c.souscripteur_id
+        WITH active_ids AS (
+          SELECT souscripteur_id AS client_id FROM contrat
+          WHERE souscripteur_id IS NOT NULL AND souscripteur_id <> '0'
+            AND date_debut <= '2026-10-14' AND (date_fin IS NULL OR date_fin >= '2026-10-14')
+            AND date_derniere_cotisation >= '2026-07-14'
+          UNION
+          SELECT assure_id FROM contrat
+          WHERE assure_id IS NOT NULL AND assure_id <> '0'
+            AND date_debut <= '2026-10-14' AND (date_fin IS NULL OR date_fin >= '2026-10-14')
+            AND date_derniere_cotisation >= '2026-07-14'
+        ), direction_counts AS (
+          SELECT COUNT(*) AS n FROM active_ids a JOIN client c ON c.client_id=a.client_id
+          UNION ALL
+          SELECT COUNT(*) FROM active_ids a JOIN client c ON c.client_id=a.client_id
+          UNION ALL
+          SELECT COUNT(*) FROM active_ids a JOIN client c ON c.client_id=a.client_id
+        )
+        SELECT MAX(n)-MIN(n) AS ecart FROM direction_counts
       warn: when > 1000
       fail: when > 5000
 

@@ -4,11 +4,39 @@ Ce dépôt est le vôtre pour tout le TD (5 séances). Il contient la pile Docke
 
 ## Démarrer (une fois, séance 1)
 
-1. Créez votre dépôt à partir du modèle (bouton « Use this template », dépôt **privé**), nommé `td-qualite-GROUPE` (par exemple `td-qualite-g03`).
+1. Créez votre dépôt à partir du modèle (bouton « Use this template », dépôt **public**, conformément à la consigne du cours), nommé `td-qualite-GROUPE` (par exemple `td-qualite-g03`).
 2. Ajoutez l'enseignant comme collaborateur en lecture (Settings, Collaborators) et chaque membre du groupe en écriture.
 3. Clonez le dépôt, puis déposez le dossier `data/` fourni par l'enseignant à la racine du clone. Il est ignoré par git : ne le commitez jamais.
-4. Lancez la pile : `docker compose up -d --build`, puis `docker exec dq_jupyter python pipelines/load_sources.py`.
-5. Renseignez `livrables/00_equipe.md` avant la fin de l'ouverture de S1.
+4. Lancez la pile : `docker compose up -d --build`, puis chargez les sources : `docker exec dq_jupyter python pipelines/load_sources.py`.
+5. Chargez et contrôlez Bronze : `docker exec dq_jupyter python pipelines/load_bronze.py --batch-id L-2026-10-14`, puis `docker exec dq_jupyter python pipelines/check_bronze.py --batch-id L-2026-10-14`.
+6. Reproduisez le profil S1 : `docker exec dq_jupyter python pipelines/profile_s1.py`.
+7. Renseignez `livrables/00_equipe.md` avant la fin de l'ouverture de S1.
+
+## Rejouer les mesures S2 à S5
+
+Utilisez le même lot pour conserver la traçabilité :
+
+```powershell
+docker exec dq_jupyter python pipelines/run_ge_s2.py --batch-id L-2026-10-14
+docker exec dq_jupyter python pipelines/profile_s3.py --batch-id L-2026-10-14 --reference-date 2026-10-14
+docker exec dq_jupyter soda scan -d crm -c soda/configuration.yml soda/checks/client_checks.yml
+docker exec dq_jupyter soda scan -d crm -c soda/configuration.yml soda/checks/contrat_checks.yml
+docker exec dq_jupyter soda scan -d crm -c soda/configuration.yml soda/checks/sinistre_checks.yml
+docker exec dq_jupyter python pipelines/evaluate_pairs_s4.py
+docker exec dq_jupyter python pipelines/transform_s4.py --batch-id L-2026-10-14
+docker exec dq_jupyter python pipelines/export_history_s5.py --batch-id L-2026-10-14 --output-dir reports
+docker exec dq_jupyter python pipelines/certify_s5.py --batch-id L-2026-10-14
+```
+
+Un code retour non nul peut être le résultat attendu : GE/Soda signalent les anomalies des données sources et le certificat produit `NO_GO` tant que des règles bloquantes ne sont pas mesurées et conformes dans leur couche attendue. Les exports de lignes S2 et les rapports générés sous `reports/` restent locaux et sont ignorés par Git. La publication CRM est volontairement refusée tant que RQ-025 et les tables cibles ne sont pas implémentées.
+
+## Préparer la soutenance du 18 novembre 2026
+
+Le support court est dans [livrables/Soutenance_Groupe05_AssurConnect.pptx](./livrables/Soutenance_Groupe05_AssurConnect.pptx) : 8 diapositives principales et 3 annexes. Le dossier et l’export réel du certificat sont dans [livrables/DOSSIER_GO_NOGO.md](./livrables/DOSSIER_GO_NOGO.md) et [livrables/CERTIFICAT_QUALITE.csv](./livrables/CERTIFICAT_QUALITE.csv). Le script oral existe en [Markdown](./livrables/SCRIPT_ORAL_SOUTENANCE.md) et en [PDF](./livrables/SCRIPT_ORAL_SOUTENANCE.pdf).
+
+Pour la démonstration de deux minutes, démarrez la pile avec `docker compose up -d`, ouvrez JupyterLab sur `http://localhost:8888/lab?token=assurconnect`, puis exécutez [notebooks/Untitled.ipynb](./notebooks/Untitled.ipynb). Le notebook relit le certificat et sa couverture en lecture seule. Il ne faut pas relancer `pipelines/certify_s5.py` pendant la démonstration : ce script émet et enregistre un nouveau certificat.
+
+La recommandation actuelle est NO-GO. Le groupe déclare la décision signée par Oussama, Data Owner; joindre la date et la preuve de signature au dossier remis. Les rôles S5 sont confirmés, mais le détail des contributions et des stories reste à partager dans `livrables/00_equipe.md`.
 
 ## Ce que vous rendez, séance par séance
 
