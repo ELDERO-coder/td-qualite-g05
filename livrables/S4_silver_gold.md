@@ -56,7 +56,32 @@ La porte S complète n'est pas franchie : les attentes bloquantes doivent être 
 | Paires dans une file de revue | Non implémentée; les candidats flous ne sont pas fusionnés. |
 | Paires labels évaluées à 0,85 : précision / rappel | 99 % / 98 % global; 100 % / 100 % sur 50 CRM-CIF |
 
-Le CSV des labels ne contient que 50 cas CRM-CIF; ces taux ne garantissent pas la performance sur toute la population. Le cas « Société Meunier » n'est pas isolé dans le livrable faute d'une sélection métier vérifiée; le script actuel ne doit pas être interprété comme preuve de son golden record.
+Le CSV des labels ne contient que 50 cas CRM-CIF; ces taux ne garantissent pas la performance sur toute la population.
+
+### Trace Meunier : deux sources, deux Gold (cas candidat non fusionné)
+
+Le couple ci-dessous a été retrouvé dans les données réelles chargées. Le nom, l'adresse, le CP, la ville, le téléphone et l'email concordent; la raison sociale diffère seulement par l'accentuation et la ponctuation. Les identifiants restent toutefois séparés dans Gold :
+
+| Système | Identifiant source | Raison sociale | Bronze | Silver | Gold actuel |
+|---|---|---|---:|---:|---|
+| CRM | `A-17929` | Société Meunier SARL | `110723` | `708723` | `CLI-047477` |
+| CIF | `K385175` | SOCIETE MEUNIER S.A.R.L. | `54773` | `812773` | `CLI-022264` |
+
+Attributs concordants observés : `91 rue Jules Ferry`, `59000`, Lille, `0922010418`, `contact@societemeuniersarl559.fr`. La trace est donc `CRM A-17929 → Bronze 110723 → Silver 708723 → Gold CLI-047477` et `CIF K385175 → Bronze 54773 → Silver 812773 → Gold CLI-022264`. **Ce n'est pas encore un golden record unifié** : le pipeline actuel exige notamment prénom et date de naissance non vides et ne couvre pas le rapprochement des personnes morales; il ne fusionne donc pas ces deux lignes.
+
+**Golden record candidat à arbitrer (non écrit dans Gold) :**
+
+| Attribut candidat | Valeur proposée | Provenance et justification | Réserve |
+|---|---|---|---|
+| Identifiants source | CRM `A-17929` + CIF `K385175` | Les deux lignes ont les mêmes adresse, CP, ville, téléphone et email. | Candidat de rapprochement, pas de fusion enregistrée. |
+| Raison sociale affichée | `Société Meunier SARL` | Valeur CRM; CIF fournit `SOCIETE MEUNIER S.A.R.L.`, compatible après normalisation de casse, accent et ponctuation. | La règle de survie CRM-prioritaire est provisoire. |
+| Adresse | `91 rue Jules Ferry` | Même valeur CRM et CIF. | À confirmer par le Data Steward. |
+| Code postal / ville | `59000` / `Lille` | CRM `59000`/`Lille`; CIF `59000`/`LILLE`. | Casse normalisable sans perte. |
+| Téléphone / email | `0922010418` / `contact@societemeuniersarl559.fr` | Valeurs identiques dans les deux sources. | Données de contact concordantes, mais non substitut à une preuve d'identité légale. |
+| Identifiant Gold cible | À attribuer par le pipeline après arbitrage | Les Gold actuels sont `CLI-047477` et `CLI-022264`. | Ne pas inventer un `cli_id` ni écraser les deux entrées avant validation. |
+| Identifiant légal (SIREN) | Non disponible dans les champs examinés | Aucun identifiant légal ne permet ici d'établir seul l'identité juridique. | À obtenir/vérifier avant approbation définitive. |
+
+Le couple est un candidat solide à revue, pas une fusion métier approuvée. Avant de créer une ligne Gold unique, faire valider l'identité par le Data Owner (idéalement avec un identifiant légal tel que SIREN), approuver la règle de normalisation/survie et tracer l'arbitrage dans le journal des décisions. Il existe plusieurs raisons sociales contenant « Meunier »; ne pas généraliser cette fusion aux homonymes. Le couple ci-dessus est un exemple documenté, sans prétendre qu'il s'agit nécessairement de l'entité précise visée par le professeur.
 
 Règle technique provisoire de survie : CRM prioritaire, sinon CIF, puis première valeur non nulle pour identité, adresse, téléphone et email. Ce n'est pas une décision validée. Les statuts CIF et les valeurs métier conflictuelles doivent être arbitrés par le Data Owner avant diffusion.
 
@@ -77,7 +102,7 @@ Les clients ne sont pas rejetés; ils sont conservés et parfois marqués à sur
 
 | Donnée attendue | État de la preuve |
 |---|---|
-| Société Meunier | À sélectionner et valider avec le groupe; ne pas choisir un homonyme automatiquement. |
+| Société Meunier | Couple CRM `A-17929` / CIF `K385175` retrouvé et tracé jusqu'à deux Gold distincts; identité légale à valider avant toute fusion. |
 | Code postal à zéro initial | Aucun `00000` dans CRM mesuré; cas précis et identifiants de ligne à retrouver dans les sources avant revendication. |
 | Adresse de sinistre | Bronze existe, mais transformation Silver/BAN et Gold sinistre non implémentées. |
 
@@ -87,9 +112,10 @@ Pour les clients, la chaîne technique disponible est `gold.xref_identifiants` �
 
 - [x] Conservation des clients CRM/CIF : Silver + rejets = Bronze.
 - [x] Deux exécutions reproduisent les mêmes volumes clients Silver/Gold/xref.
+- [x] Trace Meunier CRM/CIF documentée jusqu'aux deux identifiants Gold actuellement distincts; le golden record unifié reste à arbitrer.
 - [ ] Porte S complète : tests manquants sur les règles bloquantes et tables contrat/sinistre.
 - [ ] Tables certifiées et vue unique `v_client_actif`.
-- [ ] Trois exemples de lineage validés, dont contrat et sinistre.
+- [ ] Trois exemples de lineage validés, dont contrat et sinistre; la trace Meunier seule ne satisfait pas ce critère.
 
 ## 7. Difficultés et reprise
 

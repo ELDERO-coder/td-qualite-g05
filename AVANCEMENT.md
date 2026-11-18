@@ -29,12 +29,12 @@ Mettez à jour ce tableau à chaque fin de séance (et dès qu'une story change 
 | S4 | US-24 | Dédoublonnage | En cours | `pipelines/evaluate_pairs_s4.py`; `pipelines/transform_s4.py` | Seuil 0,85 évalué; fusion production limitée à 13 967 clés exactes CRM-CIF non ambiguës. |
 | S4 | US-25 | Golden record | En cours | `gold.client_unique`; `catalogue/gold_client_unique.md` | 126 033 clients; survie CRM prioritaire provisoire, validation Data Owner requise. |
 | S4 | US-27 | Gold et client actif unique | En cours | `gold.client_unique` | 55 602 actifs; vue `v_client_actif` et contrats/sinistres certifiés manquants. |
-| S4 | US-28 | Traçabilité de trois données | En cours | `gold.xref_identifiants` | Lignage client existe; les trois cas nominaux/CP/sinistre ne sont pas tous vérifiés. |
+| S4 | US-28 | Traçabilité de trois données | En cours | `gold.xref_identifiants`; `livrables/S4_silver_gold.md` | Cas Meunier CRM/CIF tracé jusqu'à deux Gold distincts; cas CP initial et lineage sinistre non vérifiés/de bout en bout non implémenté. |
 | S5 | US-29 | Historique des mesures | En cours | `pipelines/export_history_s5.py` | Export exécuté; seules couches BRONZE et CRM sont mesurées. |
 | S5 | US-30 | Courbes d'évolution | En cours | `reports/s5_history.png` | Courbe partielle; Silver/Gold absents, donc aucune tendance inter-couche revendiquée. |
 | S5 | US-31 | Certificat de qualité | En cours | `pipelines/certify_s5.py`; certificat `CERT-L20261014-132851` | NO_GO réel : 2/19 bloquantes mesurées et conformes, sans signataire. |
 | S5 | US-32 | Publication vers le CRM | En cours | `pipelines/publish_s5.py` | Refus NO_GO testé; chargeur RQ-025 et tables cible absents. |
 | S5 | US-34 | Catalogue, propriétaires, lineage | En cours | `catalogue/gold_client_unique.md`; `livrables/00_equipe.md` | Rôles S5 confirmés par le groupe : Oussama Data Owner, Paul Ingénieur qualité, Romeo/Dewano Data Steward; validations métier restantes. |
-| S5 | US-35 | Dossier go/no-go | En cours | `livrables/DOSSIER_GO_NOGO.md`; `livrables/CERTIFICAT_QUALITE.csv`; `livrables/Soutenance_Groupe05_AssurConnect.pptx` | Dossier et support préparés; NO-GO déclaré signé par Oussama; date/preuve de signature et contributions détaillées à joindre. Le certificat en base reste NO_GO avec signataire NULL. |
+| S5 | US-35 | Dossier go/no-go | En cours | `livrables/DOSSIER_GO_NOGO.md`; `livrables/CERTIFICAT_QUALITE.csv`; `livrables/Soutenance_Groupe05_AssurConnect.pptx` | Dossier complété avec mesures de quarantaine potentielle et impact sinistres; NO-GO déclaré par le groupe, preuve de signature à joindre. Le certificat en base reste NO_GO avec signataire NULL; transformations contrat/sinistre, porte complète et publication restent à faire. |
 
 Stories d'extension (facultatives) : US-05, US-08, US-20, US-26, US-33. Ajoutez une ligne si vous les traitez.

@@ -52,6 +52,8 @@ Garde de publication : `pipelines/publish_s5.py`. Aucun chargement n'est effectu
 
 RQ-025 : aucune réconciliation gold→CRM cible, aucun comptage/somme de contrôle de publication; tables cibles absentes.
 
+Le diagnostic de quarantaine potentielle est détaillé en S3 : 2 892 contrats distincts présentent au moins un des cinq motifs mesurés, et 1 092 sinistres sont rattachés à ces contrats. Aucune de ces lignes n'a été mise en quarantaine par le pipeline actuel. Ces volumes renforcent la nécessité de compléter les règles, les traitements Silver/Gold et la traçabilité avant publication; ils ne constituent ni une décision de rejet ni une modification du certificat.
+
 Le chargement tout-ou-rien n'est pas vérifié, car le chargeur transactionnel n'est pas encore implémenté. Le script garde-fou refuse explicitement toute publication tant que ce point est incomplet.
 
 ## 3 bis. Gouvernance (US-34)

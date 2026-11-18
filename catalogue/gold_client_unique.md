@@ -19,6 +19,15 @@ Statut : fiche de travail, données non certifiées et non publiables.
 
 `gold.xref_identifiants` conserve `source_systeme`, `source_id`, `bronze_row_id` et `silver_row_id`; les identifiants Bronze sont spécifiques à leur table, donc le système source fait partie du lignage.
 
+### Cas de revue : Société Meunier SARL, Lille
+
+| Source | ID source | Bronze | Silver | Gold actuel |
+|---|---|---:|---:|---|
+| CRM | `A-17929` | `110723` | `708723` | `CLI-047477` |
+| CIF | `K385175` | `54773` | `812773` | `CLI-022264` |
+
+Les raisons sociales, adresses et coordonnées concordent selon le profil mesuré et documenté dans [`../livrables/S4_silver_gold.md`](../livrables/S4_silver_gold.md). Le rapprochement exact de production ne fusionne pas ces deux lignes; elles restent deux clients Gold. Ne pas les présenter comme un golden record unique avant validation métier de l'entité légale et de la règle de survie.
+
 ## Limites connues
 
 - La fusion automatique est limitée aux clés exactes non ambiguës; le score fuzzy évalué sur 200 paires n'est pas appliqué à la production.

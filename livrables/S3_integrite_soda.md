@@ -36,6 +36,65 @@ Aucune clé étrangère n'est déclarée dans la base : chaque relation est à v
 | `sinistre.contrat_id` vers contrat | 100 000 | 0 | 100 % | Aucune référence de contrat orpheline observée. |
 | `sinistre` dans période de garantie du contrat | 100 000 | 1 200 | 98,800 % | RQ-017 bloquante; date hors période ou dates de contrat à investiguer. |
 
+## 2 bis. Mesure des contrats candidats à la quarantaine
+
+Recomptage en lecture seule des contrats CRM, en appliquant les cinq contrôles ci-dessous. Ces volumes sont des **candidats à la mise en attente**, pas une quarantaine réellement exécutée : le pipeline contrat n'est pas implémenté et aucun rejet de contrat n'a été enregistré dans `dq.rejets`.
+
+| Règle | Motif | Contrats concernés |
+|---|---|---:|
+| RQ-001 | Fin antérieure ou égale au début | 800 |
+| RQ-010 | Durée de garantie hors domaine | 600 |
+| RQ-011 | Type de contrat absent du référentiel | 200 |
+| RQ-012 | Souscripteur orphelin | 1 000 |
+| RQ-013 | Assuré orphelin, sentinelle `0` exclue | 300 |
+| **Union des cinq règles** | **Contrats distincts concernés** | **2 892 / 100 000 (2,892 %)** |
+
+Les cinq comptages donnent 2 900 occurrences de règles. Huit contrats cumulent deux motifs : quatre « assuré orphelin + durée invalide », deux « période invalide + assuré orphelin », un « durée invalide + type inconnu » et un « assuré orphelin + type inconnu ». Il reste 97 108 contrats sans l'un de ces cinq motifs; cela ne vaut pas certification, les autres règles restant à mesurer.
+
+**Impact sinistres à prendre en compte :** 1 092 sinistres sont rattachés à un contrat ayant au moins un de ces motifs; 14 de ces sinistres sont également hors période de garantie. Au total, 1 200 sinistres sont hors garantie (RQ-017). Ces chiffres mesurent un impact potentiel; ils ne justifient pas de supprimer les contrats ou sinistres. Il faut conserver les lignes, tracer le motif et arbitrer le traitement métier avant toute mise en quarantaine.
+
+Requête de contrôle en lecture seule, exécutable dans MariaDB sur la base chargée. La colonne `contrats_distincts_avec_motif` déduplique les motifs par contrat; les trois dernières colonnes mesurent l'impact sur les sinistres.
+
+```sql
+WITH contrat_flags AS (
+    SELECT c.contrat_id,
+           (c.date_fin <= c.date_debut) AS periode_invalide,
+           (c.duree_garantie_mois IS NULL
+             OR c.duree_garantie_mois NOT IN (12, 24, 36, 60)) AS duree_invalide,
+           (c.code_type IS NOT NULL AND t.code_type IS NULL) AS type_inconnu,
+           (c.souscripteur_id IS NOT NULL AND sub.client_id IS NULL) AS souscripteur_orphelin,
+           (c.assure_id IS NOT NULL AND c.assure_id <> '0'
+             AND ass.client_id IS NULL) AS assure_orphelin
+    FROM crm.contrat c
+    LEFT JOIN crm.type_contrat t ON t.code_type = c.code_type
+    LEFT JOIN crm.client sub ON sub.client_id = c.souscripteur_id
+    LEFT JOIN crm.client ass ON ass.client_id = c.assure_id
+), sinistre_flags AS (
+    SELECT s.sinistre_id,
+           (f.periode_invalide OR f.duree_invalide OR f.type_inconnu
+             OR f.souscripteur_orphelin OR f.assure_orphelin) AS contrat_avec_motif,
+           (s.date_survenance < c.date_debut
+             OR s.date_survenance > c.date_fin) AS hors_garantie
+    FROM crm.sinistre s
+    JOIN crm.contrat c ON c.contrat_id = s.contrat_id
+    JOIN contrat_flags f ON f.contrat_id = c.contrat_id
+)
+SELECT
+    (SELECT COUNT(*) FROM crm.contrat) AS contrats_total,
+    (SELECT SUM(periode_invalide) FROM contrat_flags) AS RQ_001,
+    (SELECT SUM(duree_invalide) FROM contrat_flags) AS RQ_010,
+    (SELECT SUM(type_inconnu) FROM contrat_flags) AS RQ_011,
+    (SELECT SUM(souscripteur_orphelin) FROM contrat_flags) AS RQ_012,
+    (SELECT SUM(assure_orphelin) FROM contrat_flags) AS RQ_013,
+    (SELECT SUM(periode_invalide OR duree_invalide OR type_inconnu
+                OR souscripteur_orphelin OR assure_orphelin)
+       FROM contrat_flags) AS contrats_distincts_avec_motif,
+    (SELECT SUM(contrat_avec_motif) FROM sinistre_flags) AS sinistres_lies_aux_contrats_avec_motif,
+    (SELECT SUM(hors_garantie) FROM sinistre_flags) AS RQ_017,
+    (SELECT SUM(contrat_avec_motif AND hors_garantie) FROM sinistre_flags)
+        AS sinistres_avec_les_deux_motifs;
+```
+
 ## 3. Valeur sentinelle (US-17)
 
 | Contrôle | Orphelins | Preuve |
